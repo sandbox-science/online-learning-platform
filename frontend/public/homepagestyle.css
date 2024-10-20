@@ -1,0 +1,203 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f4f8;
+    color: #333;
+}
+
+/* Header Styling */
+header {
+    background-color: #000080; /* Navy blue color for the header */
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    border-bottom: 5px solid #0056b3;
+}
+
+.header-content h1 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Intro Section */
+.intro {
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #4a90e2, #50c9c3);
+    color: #fff;
+    border-radius: 10px;
+    margin: 30px auto;
+    width: 80%;
+}
+
+.intro h2 {
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+.intro p {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+/* Buttons Styling */
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.btn {
+    background-color: #ff6f61;
+    color: #fff;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background-color: #ff4c3b;
+}
+
+/* About Section */
+.about {
+    background-color: #fff;
+    padding: 40px 20px;
+    text-align: center;
+    margin: 30px auto;
+    width: 80%;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.about h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #007BFF;
+}
+
+.about p {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* Features Section */
+.features {
+    display: flex;
+    justify-content: space-around;
+    padding: 50px 20px;
+    background-color: #e8f4f8;
+    flex-wrap: wrap;
+    gap: 20px;
+    border-radius: 10px;
+}
+
+.feature-box {
+    padding: 30px;
+    border-radius: 10px;
+    width: 22%;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Adding box-shadow again */
+}
+
+/* Specific Styles for Each Feature Box */
+.feature-box:nth-child(1) {
+    background-color: #d3d3d3; /* Grey for HOME */
+}
+
+.feature-box:nth-child(2) {
+    background-color: #87ceeb; /* Sky blue for ABOUT */
+    color: #fff;
+}
+
+.feature-box:nth-child(3) {
+    background-color: #000000; /* Black for COURSES */
+    color: #fff;
+}
+
+.feature-box:nth-child(4) {
+    background-color: #ffffff; /* White for CONTACT */
+    color: #333;
+}
+
+/* Feature Box Image Styling */
+.feature-box img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 15px;
+    display: block;
+    border: none;
+    background: none;
+}
+
+/* Popular Courses */
+.popular-courses {
+    background-color: #fefefe;
+    padding: 40px 20px;
+    text-align: center;
+    margin: 30px auto;
+    width: 80%;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.popular-courses h2 {
+    font-size: 24px;
+    margin-bottom: 30px;
+    color: #50c9c3;
+}
+
+.course-list {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.course-box {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 45%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Course Box Image Styling */
+.course-box img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .features, .course-list {
+        flex-direction: column;
+        align
