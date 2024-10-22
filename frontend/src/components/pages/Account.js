@@ -75,7 +75,7 @@ export function Account() {
             case 'accountInfo':
                 return (
                     <section>
-                        <h1 className="text-2xl font-bold mb-4">Account Information</h1>
+                        <h1 className="text-2xl font-bold mb-4">Account Informations</h1>
                         <p className="text-gray-700 mb-2"><b>Email</b>: {userInfo.email}</p>
                         <p className="text-gray-700"><b>Username</b>: {userInfo.username}</p>
                     </section>
@@ -93,7 +93,7 @@ export function Account() {
                         <h1 className="text-2xl font-bold mb-4">Delete Account</h1>
                         <form onSubmit={handleDeleteSubmit} className="max-w-lg">
                             <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                                <label className="block text-gray-700 text-sm font-bold mb-2">Confirm with your Password</label>
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     name="password"
