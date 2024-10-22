@@ -88,6 +88,7 @@ This API documentation provides detailed information for our **endpoint**. Each 
 - **Example**:
     ```bash
     curl -X DELETE http://localhost:4000/delete -H "Content-Type: application/json" -d '{
+        "password": "Password1234",
         "user_id": "1"
     }'
     ```
