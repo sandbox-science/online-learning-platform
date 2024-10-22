@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { IdentificationIcon, UserCircleIcon, TrashIcon } from '@heroicons/react/24/solid';
 import Cookies from 'js-cookie';
 import Notiflix from 'notiflix';
 
 export function Account() {
-    const [userInfo, setUserInfo]         = useState(null);
-    const [error, setError]               = useState(null);
-    const [formData, setFormData]         = useState({ password: "" });
-    const [showPassword, setShowPassword] = useState(false);
+    const [userInfo, setUserInfo]           = useState(null);
+    const [error, setError]                 = useState(null);
+    const [formData, setFormData]           = useState({ password: "" });
+    const [showPassword, setShowPassword]   = useState(false);
+    const [activeSection, setActiveSection] = useState('accountInfo');
 
     useEffect(() => {
         const userId = Cookies.get('userId');
@@ -34,7 +36,7 @@ export function Account() {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = async (e) => {
+    const handleDeleteSubmit = async (e) => {
         e.preventDefault();
         const userId = Cookies.get('userId');
 
@@ -68,44 +70,97 @@ export function Account() {
     if (error) return <p>Error: {error}</p>;
     if (!userInfo) return <p>Loading...</p>;
 
+    const renderSection = () => {
+        switch (activeSection) {
+            case 'accountInfo':
+                return (
+                    <section>
+                        <h1 className="text-2xl font-bold mb-4">Account Information</h1>
+                        <p className="text-gray-700 mb-2"><b>Email</b>: {userInfo.email}</p>
+                        <p className="text-gray-700"><b>Username</b>: {userInfo.username}</p>
+                    </section>
+                );
+            case 'updateAccount':
+                return (
+                    <section>
+                        <h1 className="text-2xl font-bold mb-4">Update Account</h1>
+                        <p>Not implemented, yet!</p>
+                    </section>
+                );
+            case 'deleteAccount':
+                return (
+                    <section>
+                        <h1 className="text-2xl font-bold mb-4">Delete Account</h1>
+                        <form onSubmit={handleDeleteSubmit} className="max-w-lg">
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    className="mt-2 text-sm text-blue-500"
+                                    onClick={toggleShowPassword}
+                                >
+                                    {showPassword ? "Hide Password" : "Show Password"}
+                                </button>
+                            </div>
+                            <button
+                                type="submit"
+                                className="bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300"
+                            >
+                                Delete Account
+                            </button>
+                        </form>
+                    </section>
+                );
+            default:
+                return null;
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-gray-100 flex justify-center">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full">
-                <h1 className="text-2xl font-bold mb-4">Account Information</h1>
-                <p><b>Email</b>: {userInfo.email}</p>
-                <p><b>Username</b>: {userInfo.username}</p>
+        <div className="min-h-screen bg-gray-100 flex">
+            {/* Sidebar */}
+            <aside className="bg-white p-6 shadow-md">
+                <nav>
+                    <ul className="flex flex-col">
+                        <li>
+                            <button
+                                className={`text-left w-full py-2 px-4 rounded-md hover:bg-gray-200 transition-colors ${activeSection === 'accountInfo' ? 'bg-gray-200 font-bold' : ''}`}
+                                onClick={() => setActiveSection('accountInfo')}
+                            >
+                                <IdentificationIcon className="h-6 w-6" title='Account Informations' />
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                className={`text-left w-full py-2 px-4 rounded-md hover:bg-gray-200 transition-colors ${activeSection === 'updateAccount' ? 'bg-gray-200 font-bold' : ''}`}
+                                onClick={() => setActiveSection('updateAccount')}
+                            >
+                                <UserCircleIcon className="h-6 w-6" title='Update Account Informations' />
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                className={`text-left w-full py-2 px-4 rounded-md hover:bg-gray-200 transition-colors ${activeSection === 'deleteAccount' ? 'bg-gray-200 font-bold' : ''}`}
+                                onClick={() => setActiveSection('deleteAccount')}
+                            >
+                                <TrashIcon className="h-6 w-6" title='Delete Account' />
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
 
-                <h2 className="pt-5 text-2xl font-bold mb-4">Delete Account</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
-                        <input
-                            type={showPassword ? "text" : "password"}
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
-                        />
-
-                        <br/>
-
-                        <button
-                            type="button"
-                            className="mt-2 text-sm text-blue-500"
-                            onClick={toggleShowPassword}
-                        >
-                            {showPassword ? "Hide Password" : "Show Password"}
-                        </button>
-                    </div>
-                    <button
-                        type="submit"
-                        className="bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300"
-                    >
-                        Delete
-                    </button>
-                </form>
-            </div>
+            <main className="flex-1 p-8 bg-white ml-4">
+                {renderSection()}
+            </main>
         </div>
     );
 }
