@@ -56,6 +56,7 @@ export function Account() {
             if (response.ok) {
                 Notiflix.Notify.success("Account Deleted successfully!");
                 Cookies.remove('token');
+                Cookies.remove('userId');
                 setTimeout(() => {
                     window.location.href = "/";
                 }, 1000);
