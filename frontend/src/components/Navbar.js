@@ -41,19 +41,21 @@ function Navbar() {
                             Home
                         </Link>
                     </li>
-                    <li className="nav-item">
-                        <Link to="/courses" className="nav-links" onClick={closeMobileMenu}>
-                            Courses
-                        </Link>
-                    </li>
 
                     {/* Conditional rendering for account vs login/signup */}
                     {isLoggedIn ? (
-                        <li className="nav-item">
-                            <Link to="/account" className="nav-btns" onClick={closeMobileMenu}>
-                                <Button buttonStyle='btn--outline' buttonSize='btn--large'>Account</Button>
-                            </Link>
-                        </li>
+                        <>
+                            <li className="nav-item">
+                                <Link to="/courses" className="nav-links" onClick={closeMobileMenu}>
+                                    Courses
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/account" className="nav-btns" onClick={closeMobileMenu}>
+                                    <Button buttonStyle='btn--outline' buttonSize='btn--large'>Account</Button>
+                                </Link>
+                            </li>
+                        </>
                     ) : (
                         <>
                             <li className="nav-item">
