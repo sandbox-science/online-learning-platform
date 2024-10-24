@@ -71,6 +71,7 @@ func UpdatePassword(c *fiber.Ctx) error {
     userID := data["user_id"]
     password := data["password"]
     confirmPassword := data["confirm_password"]
+    tokenString := c.Get("Authorization")
 
     if password != confirmPassword {
         return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Passwords do not match"})
@@ -91,7 +92,20 @@ func UpdatePassword(c *fiber.Ctx) error {
         return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Couldn't update password"})
     }
 
-    // Log out logic can be added here
+    // Validate and revoke the token after password change
+    if tokenString == "" {
+        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Authorization header is missing"})
+    }
 
-    return c.JSON(fiber.Map{"message": "Password updated successfully"})
+    // If the token is in the format "Bearer <token>", remove "Bearer "
+    if len(tokenString) > 7 && tokenString[:7] == "Bearer " {
+        tokenString = tokenString[7:]
+    }
+
+    if err := utils.RevokeToken(tokenString); err != nil {
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Couldn't revoke token"})
+    }
+
+    return c.JSON(fiber.Map{"message": "Password updated and user logged out successfully"})
 }
+
