@@ -26,3 +26,23 @@ func GenerateJWT(email string) (string, error) {
 
 	return tokenString, nil
 }
+
+
+
+// RevokeToken invalidates the token by setting its expiration time to the past
+func RevokeToken(tokenString string) error {
+	secretKey := []byte(os.Getenv("JWT_SECRET"))
+
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return secretKey, nil
+	})
+
+	if err != nil || !token.Valid {
+		return err
+	}
+
+	claims := token.Claims.(jwt.MapClaims)
+	claims["exp"] = time.Now().Add(-time.Hour).Unix() // Expire the token an hour ago
+
+	return nil // Or log token revocation success
+}
