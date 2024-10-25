@@ -1,7 +1,10 @@
 package handlers
 
 import (
+    "os"
+    "time"
     "github.com/gofiber/fiber/v2"
+    "github.com/golang-jwt/jwt/v4"
     "github.com/sandbox-science/online-learning-platform/configs/database"
     "github.com/sandbox-science/online-learning-platform/internal/entity"
     "github.com/sandbox-science/online-learning-platform/internal/utils"
@@ -60,6 +63,24 @@ func UpdateEmail(c *fiber.Ctx) error {
     return c.JSON(fiber.Map{"message": "Email updated successfully"})
 }
 
+// RevokeToken invalidates the token by setting its expiration time to the past
+func RevokeToken(tokenString string) error {
+    secretKey := []byte(os.Getenv("JWT_SECRET"))
+
+    token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+        return secretKey, nil
+    })
+
+    if err != nil || !token.Valid {
+        return err
+    }
+
+    claims := token.Claims.(jwt.MapClaims)
+    claims["exp"] = time.Now().Add(-time.Hour).Unix() // Expire the token an hour ago
+
+    return nil
+}
+
 // UpdatePassword updates a user's password and logs them out
 func UpdatePassword(c *fiber.Ctx) error {
     var data map[string]string
@@ -102,7 +123,7 @@ func UpdatePassword(c *fiber.Ctx) error {
         tokenString = tokenString[7:]
     }
 
-    if err := utils.RevokeToken(tokenString); err != nil {
+    if err := RevokeToken(tokenString); err != nil {
         return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Couldn't revoke token"})
     }
 
