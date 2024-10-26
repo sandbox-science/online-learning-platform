@@ -97,6 +97,15 @@ func TestLogin(t *testing.T) {
 				"email": "test_login@example.com",
 			}},
 		},
+		{
+			name: "Incorrect Email",
+			payload: map[string]string{
+				"email":    "do_no_exist@example.com",
+				"password": "Password1234",
+			},
+			expectedStatus: fiber.StatusUnauthorized,
+			expectedBody:   map[string]interface{}{"message": "Incorrect email"},
+		},
 	}
 
 	for _, tt := range tests {
