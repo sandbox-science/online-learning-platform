@@ -12,10 +12,10 @@ var DB *gorm.DB
 
 // InitDB initializes the database connection and performs necessary migrations.
 func InitDB(cfg entity.Config) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s port=%s dbname=%s sslmode=%s",
-		cfg.Host, cfg.User, cfg.Password, cfg.Port, cfg.DBName, cfg.SSLMode)
-
 	var err error
+
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
+		cfg.Host, cfg.User, cfg.Password, cfg.DBName, cfg.Port, cfg.SSLMode)
 
 	// Connect to the database
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
