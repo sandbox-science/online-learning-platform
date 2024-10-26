@@ -29,7 +29,6 @@ func clearAccounts(t *testing.T) {
 func TestDB(t *testing.T) {
 	var err error
 
-	// dsn := "host=postgres user=postgres password=1234 dbname=csudh_test port=5432 sslmode=disable"
 	dsn := "host=" + os.Getenv("DB_HOST") +
 		" user=" + os.Getenv("DB_USER") +
 		" password=" + os.Getenv("DB_PASSWORD") +
