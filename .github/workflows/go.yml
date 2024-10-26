@@ -20,6 +20,5 @@ jobs:
       - name: Build
         run: cd backend && go build -v ./...
 
-      # Remove test on GitHub Action for now (until bug fix)
-      # - name: Test
-      #   run: cd backend && go test -v ./...
+      - name: Test
+        run: cd backend && go test -cover -v ./internal/handlers/
