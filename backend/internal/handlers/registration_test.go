@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/gofiber/fiber/v2"
@@ -27,7 +28,12 @@ func setupApp() *fiber.App {
 func setupTestDB(t *testing.T) {
 	var err error
 
-	dsn := "host=postgres user=postgres password=1234 dbname=csudh_test port=5432 sslmode=disable"
+	dsn := "host=" + os.Getenv("DB_HOST") +
+		" user=" + os.Getenv("DB_USER") +
+		" password=" + os.Getenv("DB_PASSWORD") +
+		" dbname=" + os.Getenv("DB_NAME") +
+		" port=" + os.Getenv("DB_PORT") +
+		" sslmode=disable"
 	database.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		t.Fatalf("Failed to connect to test database: %v", err)
