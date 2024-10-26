@@ -28,6 +28,19 @@ services:
     volumes:
       - ./backend:/app
 
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./backend/.env.test
+    command: ["go", "test", "-cover", "./internal/handlers/", "-v"]
+    volumes:
+      - ./backend:/app
+
   frontend:
     build:
       context: ./frontend
