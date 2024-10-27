@@ -37,7 +37,7 @@ services:
         condition: service_healthy
     env_file:
       - ./backend/.env.test
-    command: ["go", "test", "-cover", "./internal/handlers/", "-v"]
+    command: ["go", "test", "-cover", "./internal/...", "-v"]
     volumes:
       - ./backend:/app
 
