@@ -72,6 +72,7 @@ func TestRegister(t *testing.T) {
 			payload: map[string]string{
 				"username":         "testuser",
 				"email":            "test@example.com",
+				"role":             "student",
 				"password":         "password123",
 				"confirm_password": "password123",
 			},
@@ -84,6 +85,7 @@ func TestRegister(t *testing.T) {
 			payload: map[string]string{
 				"username":         "testuser",
 				"email":            "test@example.com",
+				"role":             "student",
 				"password":         "password123",
 				"confirm_password": "password321",
 			},
@@ -92,10 +94,24 @@ func TestRegister(t *testing.T) {
 			setup:          func(t *testing.T) {},
 		},
 		{
+			name: "Invalid Role",
+			payload: map[string]string{
+				"username":         "testuser",
+				"email":            "test@example.com",
+				"role":             "dev",
+				"password":         "password123",
+				"confirm_password": "password123",
+			},
+			expectedStatus: fiber.StatusBadRequest,
+			expectedBody:   map[string]interface{}{"message": "Invalid role: must be student or educator"},
+			setup:          func(t *testing.T) {},
+		},
+		{
 			name: "Account already exists",
 			payload: map[string]string{
 				"username":         "testuser",
 				"email":            "test@example.com",
+				"role":             "educator",
 				"password":         "password123",
 				"confirm_password": "password123",
 			},
@@ -103,7 +119,7 @@ func TestRegister(t *testing.T) {
 			expectedBody:   map[string]interface{}{"message": "ERROR: duplicate key value violates unique constraint \"uni_accounts_email\" (SQLSTATE 23505)"},
 			setup: func(t *testing.T) {
 				clearAccountsTable(t)
-				database.DB.Create(&entity.Account{Username: "testuser", Email: "test@example.com", Password: "hashedpassword"})
+				database.DB.Create(&entity.Account{Username: "testuser", Email: "test@example.com", Password: "hashedpassword", Role: "student"})
 			},
 		},
 	}
