@@ -41,6 +41,7 @@ func User(c *fiber.Ctx) error {
 		"user": fiber.Map{
 			"username": *decryptedUsernamePtr,
 			"email":    user.Email,
+			"role":     user.Role,
 		},
 	})
 

@@ -18,6 +18,11 @@ func Register(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Invalid input"})
 	}
 
+	// Validate Role
+	if data["role"] != "student" && data["role"] != "educator" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Invalid role: must be student or educator"})
+	}
+
 	// Validate input
 	if data["password"] != data["confirm_password"] {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Passwords do not match"})
@@ -42,6 +47,7 @@ func Register(c *fiber.Ctx) error {
 		Username: encryptedUsername,
 		Email:    data["email"],
 		Password: data["password"],
+		Role:     data["role"],
 	}
 
 	// Hash password

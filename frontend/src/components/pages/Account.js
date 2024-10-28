@@ -78,7 +78,8 @@ export function Account() {
                     <section>
                         <h1 className="text-2xl font-bold mb-4">Account Informations</h1>
                         <p className="text-gray-700 mb-2"><b>Email</b>: {userInfo.email}</p>
-                        <p className="text-gray-700"><b>Username</b>: {userInfo.username}</p>
+                        <p className="text-gray-700 mb-2"><b>Username</b>: {userInfo.username}</p>
+                        <p className="text-gray=700 mb-2"><b>Role</b>: {userInfo.role}</p>
                     </section>
                 );
             case 'updateAccount':

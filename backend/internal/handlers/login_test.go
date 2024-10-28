@@ -53,6 +53,7 @@ func TestDB(t *testing.T) {
 		Username: "dev_test",
 		Email:    "test_login@example.com",
 		Password: "Password1234",
+		Role:     "educator",
 	}
 
 	utils.HashPassword(&mockUser)

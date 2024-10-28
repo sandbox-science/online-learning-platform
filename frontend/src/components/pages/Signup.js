@@ -8,6 +8,7 @@ export function Signup() {
         email: "",
         password: "",
         confirmPassword: "",
+        role: "student"
     });
     const [message, setMessage] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -57,6 +58,7 @@ export function Signup() {
                     email: formData.email,
                     password: formData.password,
                     confirm_password: formData.confirmPassword,
+                    role: formData.role
                 }),
             });
 
@@ -82,6 +84,18 @@ export function Signup() {
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                 <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Register</h2>
                 <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">Role</label>
+                        <select
+                            name="role"
+                            value={formData.role}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="student">Student</option>
+                            <option value="educator">Educator</option>
+                        </select>
+                    </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2">Username</label>
                         <input
@@ -142,6 +156,7 @@ export function Signup() {
                 </form>
                 {message && <p className="mt-4 text-red-500 text-center">{message}</p>}
 
+                {/* Password requirements section */}
                 <div className="text-sm">
                     <br />
                     <span>Passwords Must:</span>
