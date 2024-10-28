@@ -36,14 +36,15 @@ This API documentation provides detailed information for our **endpoint**. Each 
 ## 1. Registration API
 
 - **Endpoint**: `POST /register`
-- **Description**: Registers a new user.
+- **Description**: Registers a new user (select a role between Student and Educator)
 - **Request Body**:
     ```json
     {
         "username": "dev",
         "email": "dev@csudh.edu",
         "password": "MyPasssword123",
-        "confirm_password": "MyPasssword123"
+        "confirm_password": "MyPasssword123",
+        "role": "student"
     }
     ```
 - **Example**:
@@ -52,7 +53,8 @@ This API documentation provides detailed information for our **endpoint**. Each 
         "username": "dev",
         "email": "dev@csudh.edu",
         "password": "MyPasssword123",
-        "confirm_password": "MyPasssword123"
+        "confirm_password": "MyPasssword123",
+        "role": "student"
     }'
     ```
 
