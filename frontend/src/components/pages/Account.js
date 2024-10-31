@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { IdentificationIcon, UserCircleIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { IdentificationIcon, UserCircleIcon, TrashIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/solid';
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 import Notiflix from 'notiflix';
 
 export function Account() {
@@ -9,6 +10,7 @@ export function Account() {
     const [formData, setFormData]           = useState({ password: "" });
     const [showPassword, setShowPassword]   = useState(false);
     const [activeSection, setActiveSection] = useState('accountInfo');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const userId = Cookies.get('userId');
@@ -28,6 +30,11 @@ export function Account() {
             .then((data) => setUserInfo(data.user))
             .catch((error) => setError(error.message));
     }, []);
+    const handleLogout = () => {
+        Cookies.remove('token');
+        setUserInfo(null) 
+        navigate('/login');
+    };
 
     const toggleShowPassword = () => setShowPassword(!showPassword);
 
@@ -121,6 +128,21 @@ export function Account() {
                         </form>
                     </section>
                 );
+            case 'signOutAccount':
+                return (
+                    <section>
+                        <h1 className="text-2xl font-bold mb-4">Signout Of Account</h1>
+                        <p>Click the button below to signout <br />    
+                        </p>
+                        <button
+                                onClick ={handleLogout}
+                                type="submit"
+                                className="bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300"
+                            >
+                                Signout
+                            </button>
+                    </section>
+                );
             default:
                 return null;
         }
@@ -154,6 +176,14 @@ export function Account() {
                                 onClick={() => setActiveSection('deleteAccount')}
                             >
                                 <TrashIcon className="h-6 w-6" title='Delete Account' />
+                            </button>
+                        </li>
+                        <li>
+                        <button
+                                className={`text-left w-full py-2 px-4 rounded-md hover:bg-gray-200 transition-colors ${activeSection === 'signOutAccount' ? 'bg-gray-200 font-bold' : ''}`}
+                                onClick={() => setActiveSection('signOutAccount')}
+                            >
+                                <ArrowRightStartOnRectangleIcon className="h-6 w-6" title='Signout of Account' />
                             </button>
                         </li>
                     </ul>
