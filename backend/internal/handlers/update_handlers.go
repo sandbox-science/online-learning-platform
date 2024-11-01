@@ -21,8 +21,12 @@ func UpdateUsername(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": "User not found"})
 	}
 
-	// Directly assign the username
-	user.Username = data["username"]
+	// Encypt username
+	encryptedUsername, err := utils.Encrypt(data["username"])
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Error encrypting username"})
+	}
+	user.Username = encryptedUsername
 
 	if err := database.DB.Save(&user).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Couldn't update username"})
