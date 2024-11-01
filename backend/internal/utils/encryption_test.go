@@ -1,8 +1,6 @@
 package utils_test
 
 import (
-	"encoding/base64"
-	"os"
 	"testing"
 
 	"github.com/sandbox-science/online-learning-platform/internal/entity"
@@ -53,12 +51,7 @@ func TestCheckPasswordHashError(t *testing.T) {
  * Test cases for the Encrypt function
  */
 func TestEncryptNoError(t *testing.T) {
-	var key [32]byte
-	keyString := os.Getenv("CRYPTO_KEY")
-	decodedKey, _ := base64.StdEncoding.DecodeString(keyString)
-	copy(key[:], decodedKey) // Copy the decoded key to the key variable
-
-	encrypted, err := utils.Encrypt(user.Username, key)
+	encrypted, err := utils.Encrypt(user.Username)
 
 	assert.NoError(t, err, nil, "Should have no error")
 	assert.NotEmpty(t, encrypted, "Should not be empty")
@@ -68,13 +61,8 @@ func TestEncryptNoError(t *testing.T) {
  * Test cases for the Decrypt function
  */
 func TestDecryptNoError(t *testing.T) {
-	var key [32]byte
-	keyString := os.Getenv("CRYPTO_KEY")
-	decodedKey, _ := base64.StdEncoding.DecodeString(keyString)
-	copy(key[:], decodedKey)
-
-	usernameEncrypted, _ := utils.Encrypt(user.Username, key)
-	decryption, err := utils.Decrypt(usernameEncrypted, key)
+	usernameEncrypted, _ := utils.Encrypt(user.Username)
+	decryption, err := utils.Decrypt(usernameEncrypted)
 
 	assert.NoError(t, err, nil, "Should have no Error during decryption")
 	assert.NotEmpty(t, decryption, err)
