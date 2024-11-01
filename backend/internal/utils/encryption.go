@@ -29,8 +29,8 @@ func CheckPasswordHash(password, hash string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }
 
-// get_crypto_key retrieve and validate encryption key from environment variable
-func get_crypto_key() ([]byte, error) {
+// getCryptoKey retrieves and validates the encryption key from the environment variable.
+func getCryptoKey() ([]byte, error) {
 	keyString := os.Getenv("CRYPTO_KEY")
 	if keyString == "" {
 		return nil, errors.New("CRYPTO_KEY environment variable is not set")
@@ -44,16 +44,16 @@ func get_crypto_key() ([]byte, error) {
 	return decodedKey, nil
 }
 
-// Encrypts the given plaintext using the provided key
+// Encrypt encrypts the given plaintext using the key from the environment variable.
 func Encrypt(plaintext string) (string, error) {
 	var nonce [24]byte
 	if _, err := io.ReadFull(rand.Reader, nonce[:]); err != nil {
-		return "", fmt.Errorf("failed to generate nonce: %w", err)
+		return "", fmt.Errorf("failed to generate nonce for encryption: %w", err)
 	}
 
-	decodedKey, err := get_crypto_key()
+	decodedKey, err := getCryptoKey()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to retrieve encryption key: %w", err)
 	}
 
 	var key [32]byte
@@ -66,7 +66,7 @@ func Encrypt(plaintext string) (string, error) {
 	return base64.StdEncoding.EncodeToString(encrypted), nil
 }
 
-// Decrypts the given ciphertext using the provided key
+// Decrypt decrypts the given ciphertext using the key from the environment variable.
 func Decrypt(ciphertext string) (string, error) {
 	// Decode the ciphertext from Base64
 	ciphertextBytes, err := base64.StdEncoding.DecodeString(ciphertext)
@@ -77,9 +77,9 @@ func Decrypt(ciphertext string) (string, error) {
 	var nonce [24]byte
 	copy(nonce[:], ciphertextBytes[:24])
 
-	decodedKey, err := get_crypto_key()
+	decodedKey, err := getCryptoKey()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to retrieve decryption key: %w", err)
 	}
 
 	var key [32]byte
