@@ -1,9 +1,6 @@
 package handlers
 
 import (
-	"encoding/base64"
-	"os"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/sandbox-science/online-learning-platform/configs/database"
 	"github.com/sandbox-science/online-learning-platform/internal/entity"
@@ -28,16 +25,8 @@ func Register(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Passwords do not match"})
 	}
 
-	// Generate encryption key
-	var key [32]byte
-	keyString := os.Getenv("CRYPTO_KEY")
-	decodedKey, err := base64.StdEncoding.DecodeString(keyString)
-	if err != nil || len(decodedKey) != 32 {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "ENCRYPTION_KEY must be a valid Base64-encoded string of 32 bytes"})
-	}
-	copy(key[:], decodedKey) // Copy the decoded key to the key variable
-
-	encryptedUsername, err := utils.Encrypt(data["username"], key)
+	// Encypt username
+	encryptedUsername, err := utils.Encrypt(data["username"])
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Error encrypting username"})
 	}
