@@ -70,11 +70,11 @@ func SetupRoutes(app *fiber.App) {
 	// Define routes
 	app.Post("/register", handlers.Register)
 	app.Post("/login", handlers.Login)
-        app.Delete("/delete", handlers.Delete)
+	app.Delete("/delete", handlers.Delete)
 	app.Get("/user/:user_id", handlers.User)
-	
+
 	// Routes for updating user information
-	app.Put("/update-username", handlers.UpdateUsername)   // Update username
-	app.Put("/update-email", handlers.UpdateEmail)         // Update email with confirmation
-	app.Put("/update-password", handlers.UpdatePassword)   // Update password and log user off after
+	app.Put("/update-username", handlers.UpdateUsername) // Update username
+	app.Put("/update-email", handlers.UpdateEmail)       // Update email with confirmation
+	app.Put("/update-password", handlers.UpdatePassword) // Update password and log user off after
 }
