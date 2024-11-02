@@ -105,7 +105,7 @@ func TestLogin(t *testing.T) {
 				"password": "Password1234",
 			},
 			expectedStatus: fiber.StatusUnauthorized,
-			expectedBody:   map[string]interface{}{"message": "Incorrect email"},
+			expectedBody:   map[string]interface{}{"message": "There is no account with this email. Please register."},
 		},
 	}
 
