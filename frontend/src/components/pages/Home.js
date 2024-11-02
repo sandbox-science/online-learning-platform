@@ -22,13 +22,13 @@ export function Home({ ApiStatus }) {
                     </a>
                 </div>
                 <div className="feature-box">
-                    <a href='#' target="_blankc" rel="noreferrer">
+                    <a href='#top' target="_blankc" rel="noreferrer">
                         <h3><b>COURSES</b></h3>
                         <p>Browse through a variety of courses tailored to your interests.</p>
                     </a>
                 </div>
                 <div className="feature-box">
-                    <a href='#' target="_blankc" rel="noreferrer">
+                    <a href='#top' target="_blankc" rel="noreferrer">
                         <h3><b>CONTACT</b></h3>
                         <p>Reach out to us for support and inquiries.</p>
                     </a>
