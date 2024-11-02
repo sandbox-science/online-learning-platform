@@ -8,6 +8,7 @@ import (
 
 // Courses function retrieves enrolled course titles and descriptions based on user_id from the URL
 func Courses(c *fiber.Ctx) error {
+	
 	userID := c.Params("user_id")
 
 	var user entity.Account
@@ -18,16 +19,20 @@ func Courses(c *fiber.Ctx) error {
 	
 	var courses []entity.Course
 	// Get all courses that user is enrolled in
-	if err := database.DB.Model(&entity.Course{}).Preload("Students").Where("id = ?", userID).Find(courses).Error; err != nil {
+	if err := database.DB.Model(&entity.Course{}).Where("id IN (?)", database.DB.Table("enrollment").Select("course_id").Where("account_id = ?", userID)).Find(&courses).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
+	}
+
+	if len(courses) == 0{
 		return c.JSON(fiber.Map{
 			"message": "Not enrolled in any courses",
-			"courses": c.JSON(courses),
+			"courses": courses,
 		})
-	}	
+	}
 
 	return c.JSON(fiber.Map{
 		"message": "Courses successfully retrieved",
-		"courses": c.JSON(courses),
+		"courses": courses,
 	})
 
 }
