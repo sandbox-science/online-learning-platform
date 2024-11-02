@@ -6,7 +6,7 @@ import (
 	"github.com/sandbox-science/online-learning-platform/internal/entity"
 )
 
-// User function retrieves user information based on user_id from the URL
+// Courses function retrieves enrolled course titles and descriptions based on user_id from the URL
 func Courses(c *fiber.Ctx) error {
 	userID := c.Params("user_id")
 
