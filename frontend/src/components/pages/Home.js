@@ -1,4 +1,3 @@
-// Home.js
 import React from 'react';
 import './homepagestyle.css';
 
@@ -6,11 +5,15 @@ export function Home({ ApiStatus }) {
     return (
         <div className="p-6">
             <section className="about">
-                <p className="mt-2">API Response: {ApiStatus}</p>
                 <h2>About Us</h2>
-                <p>Welcome to our Online Learning Platform, designed to empower educators and students by providing a user-friendly space for creating, managing, and engaging with courses. It allows educators to create interactive content, track student progress, and manage enrollment, while students can easily access lessons and monitor their achievements. With a sleek, modern design and a focus on simplicity, the platform supports personalized learning experiences and fosters engagement through intuitive features like course creation, content delivery, and progress tracking.</p>
-                <a href='https://github.com/sandbox-science/online-learning-platform/blob/main/README.md' target="_blank">
-                    <button className="btn">Learn More</button>
+                <p className="mt-2">{ApiStatus}</p>
+                <p>Welcome to our Online Learning Platform, designed to empower educators and students by providing a user-friendly space
+                    for creating, managing, and engaging with courses. It allows educators to create interactive content, track student progress,
+                    and manage enrollment, while students can easily access lessons and monitor their achievements. With a sleek, modern design
+                    and a focus on simplicity, the platform supports personalized learning experiences and fosters engagement through intuitive
+                    features like course creation, content delivery, and progress tracking.</p>
+                <a href='https://github.com/sandbox-science/online-learning-platform/blob/main/README.md' target="_blankc" rel="noreferrer">
+                    <button className="mt-2 bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300">Learn More</button>
                 </a>
             </section>
 
