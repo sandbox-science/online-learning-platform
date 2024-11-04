@@ -130,7 +130,7 @@ export function Account() {
                         </form>
                     </section>
                 );
-            case 'logutAccount':
+            case 'logoutAccount':
                 return (
                     <section>
                         <h1 className="text-2xl font-bold mb-4">Logout Of Account</h1>
