@@ -33,7 +33,7 @@ export function Account() {
     const handleLogout = () => {
         Cookies.remove('token');
         Cookies.remove('userId');
-        setUserInfo(null) 
+        setUserInfo(null)
         navigate('/login', { replace: true });
         window.location.reload();
     };
@@ -133,15 +133,14 @@ export function Account() {
                 return (
                     <section>
                         <h1 className="text-2xl font-bold mb-4">Logout Of Account</h1>
-                        <p>Click the button below to logout   
-                        </p>
+                        <p>Click the button below to logout</p>
                         <button
-                                onClick ={handleLogout}
-                                type="submit"
-                                className="mt-2 bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300"
-                            >
-                                Logout
-                            </button>
+                            onClick={handleLogout}
+                            type="submit"
+                            className="mt-2 bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300"
+                        >
+                            Logout
+                        </button>
                     </section>
                 );
             default:
@@ -180,7 +179,7 @@ export function Account() {
                             </button>
                         </li>
                         <li>
-                        <button
+                            <button
                                 className={`text-left w-full py-2 px-4 rounded-md hover:bg-gray-200 transition-colors ${activeSection === 'logoutAccount' ? 'bg-gray-200 font-bold' : ''}`}
                                 onClick={() => setActiveSection('logoutAccount')}
                             >
