@@ -1,12 +1,11 @@
 import React from 'react';
 import './homepagestyle.css';
 
-export function Home({ ApiStatus }) {
+export function Home() {
     return (
         <div className="p-6">
             <section className="about">
                 <h2>About Us</h2>
-                <p className="mt-2">{ApiStatus}</p>
                 <p>Welcome to our Online Learning Platform, designed to empower educators and students by providing a user-friendly space
                     for creating, managing, and engaging with courses. It allows educators to create interactive content, track student progress,
                     and manage enrollment, while students can easily access lessons and monitor their achievements. With a sleek, modern design
