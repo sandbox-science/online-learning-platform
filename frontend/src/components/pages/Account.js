@@ -32,8 +32,10 @@ export function Account() {
     }, []);
     const handleLogout = () => {
         Cookies.remove('token');
+        Cookies.remove('userId');
         setUserInfo(null) 
-        navigate('/login');
+        navigate('/login', { replace: true });
+        window.location.reload();
     };
 
     const toggleShowPassword = () => setShowPassword(!showPassword);
@@ -128,18 +130,18 @@ export function Account() {
                         </form>
                     </section>
                 );
-            case 'signOutAccount':
+            case 'logutAccount':
                 return (
                     <section>
-                        <h1 className="text-2xl font-bold mb-4">Signout Of Account</h1>
-                        <p>Click the button below to signout <br />    
+                        <h1 className="text-2xl font-bold mb-4">Logout Of Account</h1>
+                        <p>Click the button below to logout   
                         </p>
                         <button
                                 onClick ={handleLogout}
                                 type="submit"
-                                className="bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300"
+                                className="mt-2 bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300"
                             >
-                                Signout
+                                Logout
                             </button>
                     </section>
                 );
@@ -180,10 +182,10 @@ export function Account() {
                         </li>
                         <li>
                         <button
-                                className={`text-left w-full py-2 px-4 rounded-md hover:bg-gray-200 transition-colors ${activeSection === 'signOutAccount' ? 'bg-gray-200 font-bold' : ''}`}
-                                onClick={() => setActiveSection('signOutAccount')}
+                                className={`text-left w-full py-2 px-4 rounded-md hover:bg-gray-200 transition-colors ${activeSection === 'logoutAccount' ? 'bg-gray-200 font-bold' : ''}`}
+                                onClick={() => setActiveSection('logoutAccount')}
                             >
-                                <ArrowRightStartOnRectangleIcon className="h-6 w-6" title='Signout of Account' />
+                                <ArrowRightStartOnRectangleIcon className="h-6 w-6" title='Logout of Account' />
                             </button>
                         </li>
                     </ul>
