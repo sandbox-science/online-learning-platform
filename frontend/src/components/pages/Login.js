@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import Cookies from 'js-cookie'
 import Notiflix from 'notiflix';
+import { useNavigate } from 'react-router-dom';
 
 export function Login() {
+    const navigate                = useNavigate();
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -35,11 +37,12 @@ export function Login() {
 
             const data = await response.json();
             if (response.ok) {
-                Notiflix.Notify.success("Login successful! Redirecting to Dashboard...");
+                Notiflix.Notify.success("Login successful!");
                 Cookies.set('token', data.token, { expires: 1, sameSite: 'none', secure: true });
                 Cookies.set('userId', data.user.ID, { sameSite: 'none', secure: true });
                 setTimeout(() => {
-                    window.location.href = "/courses";
+                    navigate('/courses', { replace: true });
+                    window.location.reload();
                 }, 1000);
             } else {
                 Notiflix.Notify.failure(data.message || "Login failed");

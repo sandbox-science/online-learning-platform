@@ -20,7 +20,7 @@ func Login(c *fiber.Ctx) error {
 
 	// Check if email exist
 	if err := database.DB.Where("email = ?", data.Email).First(&user).Error; err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "Incorrect email"})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"message": "There is no account with this email. Please register."})
 	}
 
 	// Check if the password matches

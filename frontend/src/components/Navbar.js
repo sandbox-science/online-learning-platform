@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { Button } from "./Button";
 import Cookies from 'js-cookie';
 
-function Navbar() {
+export default function Navbar() {
     const [mobileMenuActive, setMobileMenuActive] = useState(false);
     const [isLoggedIn, setIsLoggedIn]             = useState(false);
 
@@ -75,5 +75,3 @@ function Navbar() {
         </nav>
     )
 }
-
-export default Navbar;
