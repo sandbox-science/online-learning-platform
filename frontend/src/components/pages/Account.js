@@ -3,10 +3,8 @@ import { IdentificationIcon, UserCircleIcon, TrashIcon, ArrowRightStartOnRectang
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import Notiflix from 'notiflix';
-import { useNavigate } from 'react-router-dom';
 
 export function Account() {
-    const navigate                          = useNavigate();
     const [userInfo, setUserInfo]           = useState(null);
     const [error, setError]                 = useState(null);
     const [formData, setFormData]           = useState({ password: "" });
@@ -69,8 +67,7 @@ export function Account() {
                 Cookies.remove('token');
                 Cookies.remove('userId');
                 setTimeout(() => {
-                    navigate('/', { replace: true });
-                    window.location.reload();
+                    window.location.href = "/";
                 }, 1000);
             } else {
                 Notiflix.Notify.failure(data.message);
