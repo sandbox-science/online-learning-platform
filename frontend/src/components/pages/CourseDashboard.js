@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 
-export function Courses() {
+export function CourseDashboard() {
     const [courseInfo, setCourseInfo] = useState(null);
     const [error, setError] = useState(null);
 

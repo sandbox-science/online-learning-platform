@@ -7,7 +7,7 @@ import Navbar from './components/Navbar';
 import { Home } from './components/pages/Home'
 import { NotFound } from './components/pages/NotFound'
 import { HealthCheck } from './components/pages/HealthCheck';
-import { Courses } from './components/pages/Courses'
+import { CourseDashboard } from './components/pages/CourseDashboard'
 import { Course } from './components/pages/Course'
 import { Login } from './components/pages/Login'
 import { Signup } from './components/pages/Signup'
@@ -48,7 +48,7 @@ export default function App() {
         <Route path='/' element={<Home ApiStatus={message} />} />
         <Route path='*' element={<NotFound />} />
         <Route path='/health' element={<HealthCheck />} />
-        <Route path='/courses' element={<ProtectedRoute><Courses /></ProtectedRoute>} />
+        <Route path='/courses' element={<ProtectedRoute><CourseDashboard /></ProtectedRoute>} />
         <Route path="/courses/:id" element={<ProtectedRoute><Course /></ProtectedRoute>} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
