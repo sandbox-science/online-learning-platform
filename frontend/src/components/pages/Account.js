@@ -10,7 +10,7 @@ export function Account() {
     const [formData, setFormData]           = useState({ password: "" });
     const [showPassword, setShowPassword]   = useState(false);
     const [activeSection, setActiveSection] = useState('accountInfo');
-    const navigate = useNavigate();
+    const navigate                          = useNavigate();
 
     useEffect(() => {
         const userId = Cookies.get('userId');
@@ -66,9 +66,8 @@ export function Account() {
                 Notiflix.Notify.success("Account Deleted successfully!");
                 Cookies.remove('token');
                 Cookies.remove('userId');
-                setTimeout(() => {
-                    window.location.href = "/";
-                }, 1000);
+                navigate('/', { replace: true });
+                window.location.reload();
             } else {
                 Notiflix.Notify.failure(data.message);
             }
