@@ -42,18 +42,19 @@ func Courses(c *fiber.Ctx) error {
 
 // CreateCourse creates a course and adds it to the database.
 func CreateCourse(c *fiber.Ctx) error {
-	var data map[string]string;
+	
+	creator_id,err := strconv.Atoi(c.Params("creator_id"))
+	if err != nil{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid creator_id"})
+	}
 
+	var data map[string]string;
 	if err := c.BodyParser(&data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
 	}
 
 	//Verify that the account attempting to create a course is an educator
 	var role string;
-	creator_id, err := strconv.Atoi(data["creator_id"]); 
-	if err != nil{
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid creator_id"})
-	}
 	if err := database.DB.Model(&entity.Account{}).Select("role").Where("id = ?", creator_id).First(&role).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
 	}
