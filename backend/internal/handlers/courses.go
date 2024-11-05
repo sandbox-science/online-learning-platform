@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -76,4 +77,33 @@ func CreateCourse(c *fiber.Ctx) error {
 		"message": "Course created successfully",
 		"course":    course,
 	})
+}
+
+// Enroll user into course
+func Enroll(c *fiber.Ctx) error {
+	
+	userID := c.Params("user_id")
+	courseID := c.Params("course_id")
+	
+	var user entity.Account
+	// Check if the user exists
+	if err := database.DB.Where("id = ?", userID).First(&user).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
+	}
+	
+	var course entity.Course
+	// Check if the course exists
+	if err := database.DB.Where("id = ?", courseID).First(&course).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Course not found"})
+	}
+
+	// Enroll user into course
+	if err := database.DB.Model(&user).Association("Courses").Append(&course); err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Error enrolling into course"})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": fmt.Sprintf("Successfully enrolled user id %d in course %s", user.ID, course.Title),
+	})
+
 }
