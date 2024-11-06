@@ -33,3 +33,35 @@ DB_NAME     = csudh_dev
 Access the project documentation through the following links:
 - [Project Overview](https://github.com/sandbox-science/online-learning-platform/wiki/Home)
 - [API Documentation](https://github.com/sandbox-science/online-learning-platform/wiki/API-Doc)
+
+
+## Update Account API
+
+- **Endpoint**: `PUT /update`
+- **Description**: Updates user account information. Allows the user to change their username, email, or password.
+
+- **Request Body**:
+    ```json
+    {
+        "username": "dev",
+        "email": "dev@csudh.edu",
+        "password": "MyPassword123",
+        "confirm_password": "MyPassword123"
+    }
+    ```
+
+- **Example**:
+    ```bash
+    curl -X PUT http://localhost:4000/update -H "Content-Type: application/json" -d '{
+        "username": "dev",
+        "email": "dev@csudh.edu",
+        "password": "MyPassword123",
+        "confirm_password": "MyPassword123"
+    }'
+    ```
+
+- **Expected Responses**:
+    - **200 OK**: Account updated successfully.
+    - **400 Bad Request**: Invalid data, such as mismatched passwords or invalid email format.
+    - **401 Unauthorized**: User is not authenticated.
+    - **500 Internal Server Error**: Server encountered an error while updating.
