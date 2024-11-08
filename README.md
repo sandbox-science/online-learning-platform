@@ -35,33 +35,67 @@ Access the project documentation through the following links:
 - [API Documentation](https://github.com/sandbox-science/online-learning-platform/wiki/API-Doc)
 
 
-## Update Account API
+## Update Username API
 
-- **Endpoint**: `PUT /update`
-- **Description**: Updates user account information. Allows the user to change their username, email, or password.
+- **Endpoint**: `PUT /update-username`
+- **Description**: Updates the username of the user.
 
 - **Request Body**:
     ```json
     {
-        "username": "dev",
-        "email": "dev@csudh.edu",
-        "password": "MyPassword123",
-        "confirm_password": "MyPassword123"
+        "user_id": "1",
+        "username": "newUsername"
     }
     ```
 
 - **Example**:
     ```bash
-    curl -X PUT http://localhost:4000/update -H "Content-Type: application/json" -d '{
-        "username": "dev",
-        "email": "dev@csudh.edu",
-        "password": "MyPassword123",
-        "confirm_password": "MyPassword123"
+    curl -X PUT http://localhost:4000/update-username -H "Content-Type: application/json" -d '{
+        "user_id": "1",
+        "username": "newUsername"
     }'
     ```
 
-- **Expected Responses**:
-    - **200 OK**: Account updated successfully.
-    - **400 Bad Request**: Invalid data, such as mismatched passwords or invalid email format.
-    - **401 Unauthorized**: User is not authenticated.
-    - **500 Internal Server Error**: Server encountered an error while updating.
+    ## Update Email API
+
+- **Endpoint**: `PUT /update-email`
+- **Description**: Updates the email address of the user.
+
+- **Request Body**:
+    ```json
+    {
+        "user_id": "1",
+        "email": "newemail@example.com"
+    }
+    ```
+
+- **Example**:
+    ```bash
+    curl -X PUT http://localhost:4000/update-email -H "Content-Type: application/json" -d '{
+        "user_id": "1",
+        "email": "newemail@example.com"
+    }'
+    ```
+
+    ## Update Password API
+
+- **Endpoint**: `PUT /update-password`
+- **Description**: Updates the password of the user. The `confirm_password` field must match the `password` field.
+
+- **Request Body**:
+    ```json
+    {
+        "user_id": "1",
+        "password": "NewPassword123",
+        "confirm_password": "NewPassword123"
+    }
+    ```
+
+- **Example**:
+    ```bash
+    curl -X PUT http://localhost:4000/update-password -H "Content-Type: application/json" -d '{
+        "user_id": "1",
+        "password": "NewPassword123",
+        "confirm_password": "NewPassword123"
+    }'
+    ```
