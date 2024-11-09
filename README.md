@@ -35,15 +35,16 @@ Access the project documentation through the following links:
 - [API Documentation](https://github.com/sandbox-science/online-learning-platform/wiki/API-Doc)
 
 
-## Update Username API
+## 1. Update Username API
 
 - **Endpoint**: `PUT /update-username`
-- **Description**: Updates the username of the user.
+- **Description**: Updates the username of a user.
 
 - **Request Body**:
     ```json
     {
         "user_id": "1",
+        "token": "your_token_here",
         "username": "newUsername"
     }
     ```
@@ -52,20 +53,23 @@ Access the project documentation through the following links:
     ```bash
     curl -X PUT http://localhost:4000/update-username -H "Content-Type: application/json" -d '{
         "user_id": "1",
+        "token": "your_token_here",
         "username": "newUsername"
     }'
     ```
 
-    ## Update Email API
+ ## 2. Update Email API
 
 - **Endpoint**: `PUT /update-email`
-- **Description**: Updates the email address of the user.
+- **Description**: Updates the email address of a user. The `confirm_email` field must match the `email` field for validation.
 
 - **Request Body**:
     ```json
     {
         "user_id": "1",
-        "email": "newemail@example.com"
+        "token": "your_token_here",
+        "email": "dev@example.com",
+        "confirm_email": "dev@example.com"
     }
     ```
 
@@ -73,19 +77,22 @@ Access the project documentation through the following links:
     ```bash
     curl -X PUT http://localhost:4000/update-email -H "Content-Type: application/json" -d '{
         "user_id": "1",
-        "email": "newemail@example.com"
+        "token": "your_token_here",
+        "email": "dev@example.com",
+        "confirm_email": "dev@example.com"
     }'
     ```
 
-    ## Update Password API
+## 3. Update Password API
 
 - **Endpoint**: `PUT /update-password`
-- **Description**: Updates the password of the user. The `confirm_password` field must match the `password` field.
+- **Description**: Updates the password of a user and logs the user out by revoking the current token. The `confirm_password` field must match the `password` field, and a valid `token` is required for authentication.
 
 - **Request Body**:
     ```json
     {
         "user_id": "1",
+        "token": "your_token_here",
         "password": "NewPassword123",
         "confirm_password": "NewPassword123"
     }
@@ -95,6 +102,7 @@ Access the project documentation through the following links:
     ```bash
     curl -X PUT http://localhost:4000/update-password -H "Content-Type: application/json" -d '{
         "user_id": "1",
+        "token": "your_token_here",
         "password": "NewPassword123",
         "confirm_password": "NewPassword123"
     }'
