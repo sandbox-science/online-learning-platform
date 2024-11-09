@@ -12,17 +12,17 @@ import (
 // Courses function retrieves enrolled course titles and descriptions based on user_id from the URL
 func Courses(c *fiber.Ctx) error {
 	
-	userID := c.Params("user_id")
+	user_id := c.Params("user_id")
 
 	var user entity.Account
 	// Check if the user exists
-	if err := database.DB.Where("id = ?", userID).First(&user).Error; err != nil {
+	if err := database.DB.Where("id = ?", user_id).First(&user).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
 	}
 	
 	var courses []entity.Course
 	// Get all courses that user is enrolled in
-	if err := database.DB.Model(&entity.Course{}).Where("id IN (?)", database.DB.Table("enrollment").Select("course_id").Where("account_id = ?", userID)).Find(&courses).Error; err != nil {
+	if err := database.DB.Model(&entity.Course{}).Where("id IN (?)", database.DB.Table("enrollment").Select("course_id").Where("account_id = ?", user_id)).Find(&courses).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Error retrieving courses"})
 	}
 
@@ -83,18 +83,18 @@ func CreateCourse(c *fiber.Ctx) error {
 // Enroll user into course
 func Enroll(c *fiber.Ctx) error {
 	
-	userID := c.Params("user_id")
-	courseID := c.Params("course_id")
+	user_id := c.Params("user_id")
+	course_id := c.Params("course_id")
 	
 	var user entity.Account
 	// Check if the user exists
-	if err := database.DB.Where("id = ?", userID).First(&user).Error; err != nil {
+	if err := database.DB.Where("id = ?", user_id).First(&user).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
 	}
 	
 	var course entity.Course
 	// Check if the course exists
-	if err := database.DB.Where("id = ?", courseID).First(&course).Error; err != nil {
+	if err := database.DB.Where("id = ?", course_id).First(&course).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Course not found"})
 	}
 
@@ -107,4 +107,95 @@ func Enroll(c *fiber.Ctx) error {
 		"message": fmt.Sprintf("Successfully enrolled user id %d in course %s", user.ID, course.Title),
 	})
 
+}
+
+// Create a module inside a course
+func CreateModule(c *fiber.Ctx) error {
+	
+	creator_id,err := strconv.Atoi(c.Params("creator_id"))
+	if err != nil{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid creator_id"})
+	}
+
+	course_id,err := strconv.Atoi(c.Params("course_id"))
+	if err != nil{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid course_id"})
+	}
+
+	var data map[string]string;
+	if err := c.BodyParser(&data); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
+	}
+
+	var course entity.Course
+	// Check if the course exists
+	if err := database.DB.Where("id = ?", course_id).First(&course).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Course not found"})
+	}
+	//Verify that the account attempting to create a module is the creator of the course
+	if course.CreatorID != creator_id{
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User is not the course creator"})
+	}
+
+	// Create module
+	module := entity.Module{
+		Title: data["title"],
+		Course: course,
+	}
+
+	// Add module to database
+	if err := database.DB.Create(&module).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Module created successfully",
+		"module":    module,
+	})
+}
+
+// Create content inside a module
+func CreateContent(c *fiber.Ctx) error {
+	
+	creator_id,err := strconv.Atoi(c.Params("creator_id"))
+	if err != nil{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid creator_id"})
+	}
+
+	module_id,err := strconv.Atoi(c.Params("module_id"))
+	if err != nil{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid module_id"})
+	}
+
+	var data map[string]string;
+	if err := c.BodyParser(&data); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
+	}
+
+	var module entity.Module
+	// Check if the module exists
+	if err := database.DB.Where("id = ?", module_id).First(&module).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Module not found"})
+	}
+	//Verify that the account attempting to create content is the creator of the course
+	if module.Course.CreatorID != creator_id{
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User is not the course creator"})
+	}
+
+	// Create content
+	content := entity.Content{
+		Title: data["title"],
+		Module: module,
+	}
+	content.Path = fmt.Sprintf("content/%d/%d", module.Course.ID, content.ID)
+
+	// Add content to database
+	if err := database.DB.Create(&content).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Content created successfully",
+		"content":    content,
+	})
 }
