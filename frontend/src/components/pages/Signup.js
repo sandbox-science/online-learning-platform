@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import Notiflix from 'notiflix';
+import { useNavigate } from 'react-router-dom';
 
 export function Signup() {
     const [formData, setFormData] = useState({
@@ -10,7 +11,8 @@ export function Signup() {
         confirmPassword: "",
         role: "student"
     });
-    const [message, setMessage] = useState("");
+    const navigate                        = useNavigate();
+    const [message, setMessage]           = useState("");
     const [showPassword, setShowPassword] = useState(false);
 
     const toggleShowPassword = () => {
@@ -64,9 +66,10 @@ export function Signup() {
 
             const data = await response.json();
             if (response.ok) {
-                Notiflix.Notify.success("Registration successful! Redirecting to login...");
+                Notiflix.Notify.success("Registration successful!");
                 setTimeout(() => {
-                    window.location.href = "/login";
+                    navigate('/login', { replace: true });
+                    window.location.reload();
                 }, 2000);
             } else {
                 Notiflix.Notify.failure(data.message || "Registration failed");

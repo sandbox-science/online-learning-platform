@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { IdentificationIcon, UserCircleIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { IdentificationIcon, UserCircleIcon, TrashIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/solid';
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 import Notiflix from 'notiflix';
 
 export function Account() {
@@ -9,6 +10,7 @@ export function Account() {
     const [formData, setFormData]           = useState({ password: "" });
     const [showPassword, setShowPassword]   = useState(false);
     const [activeSection, setActiveSection] = useState('accountInfo');
+    const navigate                          = useNavigate();
 
     useEffect(() => {
         const userId = Cookies.get('userId');
@@ -28,6 +30,13 @@ export function Account() {
             .then((data) => setUserInfo(data.user))
             .catch((error) => setError(error.message));
     }, []);
+    const handleLogout = () => {
+        Cookies.remove('token');
+        Cookies.remove('userId');
+        setUserInfo(null)
+        navigate('/login', { replace: true });
+        window.location.reload();
+    };
 
     const toggleShowPassword = () => setShowPassword(!showPassword);
 
@@ -57,9 +66,8 @@ export function Account() {
                 Notiflix.Notify.success("Account Deleted successfully!");
                 Cookies.remove('token');
                 Cookies.remove('userId');
-                setTimeout(() => {
-                    window.location.href = "/";
-                }, 1000);
+                navigate('/', { replace: true });
+                window.location.reload();
             } else {
                 Notiflix.Notify.failure(data.message);
             }
@@ -121,6 +129,20 @@ export function Account() {
                         </form>
                     </section>
                 );
+            case 'logoutAccount':
+                return (
+                    <section>
+                        <h1 className="text-2xl font-bold mb-4">Logout Of Account</h1>
+                        <p>Click the button below to logout</p>
+                        <button
+                            onClick={handleLogout}
+                            type="submit"
+                            className="mt-2 bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300"
+                        >
+                            Logout
+                        </button>
+                    </section>
+                );
             default:
                 return null;
         }
@@ -154,6 +176,14 @@ export function Account() {
                                 onClick={() => setActiveSection('deleteAccount')}
                             >
                                 <TrashIcon className="h-6 w-6" title='Delete Account' />
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                className={`text-left w-full py-2 px-4 rounded-md hover:bg-gray-200 transition-colors ${activeSection === 'logoutAccount' ? 'bg-gray-200 font-bold' : ''}`}
+                                onClick={() => setActiveSection('logoutAccount')}
+                            >
+                                <ArrowRightStartOnRectangleIcon className="h-6 w-6" title='Logout of Account' />
                             </button>
                         </li>
                     </ul>
