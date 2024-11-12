@@ -40,6 +40,60 @@ func Courses(c *fiber.Ctx) error {
 
 }
 
+// Modules function retrieves the modules of a course
+func Modules(c *fiber.Ctx) error {
+	
+	course_id := c.Params("course_id")
+
+	var course entity.Course
+	// Check if the course exists
+	if err := database.DB.Where("id = ?", course_id).First(&course).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Course not found"})
+	}
+	
+	var modules = course.Modules
+
+	if len(modules) == 0{
+		return c.JSON(fiber.Map{
+			"message": "No modules in course",
+			"modules": modules,
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Modules successfully retrieved",
+		"modules": modules,
+	})
+
+}
+
+// Content function retrieves the content of a module
+func Content(c *fiber.Ctx) error {
+	
+	module_id := c.Params("module_id")
+
+	var module entity.Module
+	// Check if the module exists
+	if err := database.DB.Where("id = ?", module_id).First(&module).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Module not found"})
+	}
+	
+	var content = module.Content
+
+	if len(content) == 0{
+		return c.JSON(fiber.Map{
+			"message": "No content in module",
+			"content": content,
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Content successfully retrieved",
+		"content": content,
+	})
+
+}
+
 // CreateCourse creates a course and adds it to the database.
 func CreateCourse(c *fiber.Ctx) error {
 	

@@ -80,6 +80,8 @@ func SetupRoutes(app *fiber.App) {
 
 	// Routes for courses
 	app.Get("/courses/:user_id", handlers.Courses)
+	app.Get("/modules/:course_id", handlers.Modules)
+	app.Get("/content/:module_id", handlers.Content)
 	app.Post("/create-course/:creator_id", handlers.CreateCourse)
 	app.Post("/create-module/:creator_id/:course_id", handlers.CreateModule)
 	app.Post("/create-content/:creator_id/:module_id", handlers.CreateContent)
