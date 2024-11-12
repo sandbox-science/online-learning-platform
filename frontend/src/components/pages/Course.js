@@ -27,9 +27,11 @@ export function Course() {
         var contentList = [];
         module.content.forEach(content => {
             contentList.push(
-                <div className="bg-gray-200 p-4 rounded shadow" >
-                    <h3 className="text-xl font-semibold" >{content.title}</h3>
-                </div>
+                <a href={`/courses/${courseID}/${content.ID}`} >
+                    <div className="bg-gray-200 p-4 rounded shadow hover:bg-gray-400" >
+                        <h3 className="text-xl font-semibold" >{content.title}</h3>
+                    </div>
+                </a>
             )
         })
         moduleList.push(

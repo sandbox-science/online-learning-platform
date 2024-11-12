@@ -12,6 +12,7 @@ import { Course } from './components/pages/Course'
 import { Login } from './components/pages/Login'
 import { Signup } from './components/pages/Signup'
 import { Account } from './components/pages/Account'
+import { Content } from './components/pages/Content'
 
 import ProtectedRoute from "./config/ProtectedRoutes"
 
@@ -50,6 +51,7 @@ export default function App() {
         <Route path='/health' element={<HealthCheck />} />
         <Route path='/courses' element={<ProtectedRoute><CourseDashboard /></ProtectedRoute>} />
         <Route path="/courses/:courseID" element={<ProtectedRoute><Course /></ProtectedRoute>} />
+        <Route path="/courses/:courseID/:contentID" element={<ProtectedRoute><Content /></ProtectedRoute>} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/account' element={<ProtectedRoute><Account /></ProtectedRoute>} />
