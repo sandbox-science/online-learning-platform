@@ -32,7 +32,7 @@ export function CourseDashboard() {
     courseInfo.forEach(course => {
         courseList.push(
             <a href={`/courses/${course.ID}`}>
-            <div className="bg-gray-100 p-4 rounded shadow" >
+            <div className="bg-gray-100 p-4 rounded shadow hover:bg-gray-300" >
                 <h3 className="text-xl font-semibold" >{course.title}</h3>
                 <p className="mt-2">{course.description}</p>
             </div>
