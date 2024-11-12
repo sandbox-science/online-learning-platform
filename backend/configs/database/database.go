@@ -44,6 +44,16 @@ func DatabaseMigration(DB *gorm.DB) (*gorm.DB, error) {
 		return nil, err
 	}
 
+	err = DB.AutoMigrate(&entity.Module{})
+	if err != nil {
+		return nil, err
+	}
+
+	err = DB.AutoMigrate(&entity.Content{})
+	if err != nil {
+		return nil, err
+	}
+
 	fmt.Println("Migrated database!")
 
 	return DB, nil

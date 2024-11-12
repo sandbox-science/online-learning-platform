@@ -49,7 +49,7 @@ export default function App() {
         <Route path='*' element={<NotFound />} />
         <Route path='/health' element={<HealthCheck />} />
         <Route path='/courses' element={<ProtectedRoute><CourseDashboard /></ProtectedRoute>} />
-        <Route path="/courses/:id" element={<ProtectedRoute><Course /></ProtectedRoute>} />
+        <Route path="/courses/:courseID" element={<ProtectedRoute><Course /></ProtectedRoute>} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/account' element={<ProtectedRoute><Account /></ProtectedRoute>} />

@@ -40,18 +40,34 @@ func Courses(c *fiber.Ctx) error {
 
 }
 
-// Modules function retrieves the modules of a course
-func Modules(c *fiber.Ctx) error {
+// Course function retrieves an indiviudal course from its id
+func Course(c *fiber.Ctx) error {
 	
 	course_id := c.Params("course_id")
 
 	var course entity.Course
 	// Check if the course exists
-	if err := database.DB.Where("id = ?", course_id).First(&course).Error; err != nil {
+	if err := database.DB.Preload("Students").Preload("Modules").Preload("Modules.Content").Preload("Tags").Where("id = ?", course_id).First(&course).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Course not found"})
 	}
+
+	return c.JSON(fiber.Map{
+		"message": "Course successfully retrieved",
+		"course": course,
+	})
+
+}
+
+// Modules function retrieves the modules of a course
+func Modules(c *fiber.Ctx) error {
 	
-	var modules = course.Modules
+	course_id := c.Params("course_id")
+
+	var modules []entity.Module
+	// Check if the course exists
+	if err := database.DB.Preload("Content").Where("course_id = ?", course_id).Find(&modules).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Course not found"})
+	}
 
 	if len(modules) == 0{
 		return c.JSON(fiber.Map{
@@ -74,7 +90,7 @@ func Content(c *fiber.Ctx) error {
 
 	var module entity.Module
 	// Check if the module exists
-	if err := database.DB.Where("id = ?", module_id).First(&module).Error; err != nil {
+	if err := database.DB.Preload("Content").Where("id = ?", module_id).First(&module).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Module not found"})
 	}
 	
@@ -83,7 +99,7 @@ func Content(c *fiber.Ctx) error {
 	if len(content) == 0{
 		return c.JSON(fiber.Map{
 			"message": "No content in module",
-			"content": content,
+			"content": [] string{},
 		})
 	}
 
@@ -228,7 +244,7 @@ func CreateContent(c *fiber.Ctx) error {
 
 	var module entity.Module
 	// Check if the module exists
-	if err := database.DB.Where("id = ?", module_id).First(&module).Error; err != nil {
+	if err := database.DB.Preload("Course").Where("id = ?", module_id).First(&module).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Module not found"})
 	}
 	//Verify that the account attempting to create content is the creator of the course
