@@ -2,8 +2,8 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 export function Content() {
-    const { courseID } = useParams(); 
-    const { contentID } = useParams(); 
+    const { courseID }  = useParams();
+    const { contentID } = useParams();
 
     return (
         <div className="p-6">

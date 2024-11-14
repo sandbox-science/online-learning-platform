@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 
 export function CourseDashboard() {
     const [courseInfo, setCourseInfo] = useState(null);
-    const [error, setError] = useState(null);
+    const [error, setError]           = useState(null);
 
     useEffect(() => {
         const userId = Cookies.get('userId');
@@ -26,16 +26,16 @@ export function CourseDashboard() {
 
     if (error) return <p>Error: {error}</p>;
     if (!courseInfo) return <p>Loading...</p>;
-    
+
     var courseList = [];
     //Push all courses into courseList
     courseInfo.forEach(course => {
         courseList.push(
             <a href={`/courses/${course.ID}`}>
-            <div className="bg-gray-100 p-4 rounded shadow hover:bg-gray-300" >
-                <h3 className="text-xl font-semibold" >{course.title}</h3>
-                <p className="mt-2">{course.description}</p>
-            </div>
+                <div className="bg-gray-100 p-4 rounded shadow hover:bg-gray-300" >
+                    <h3 className="text-xl font-semibold" >{course.title}</h3>
+                    <p className="mt-2">{course.description}</p>
+                </div>
             </a>
         )
     });

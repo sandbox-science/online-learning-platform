@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 export function Course() {
-    const { courseID } = useParams(); 
+    const { courseID }                = useParams();
     const [courseInfo, setCourseInfo] = useState(null);
-    const [error, setError] = useState(null);
+    const [error, setError]           = useState(null);
 
     useEffect(() => {
         fetch(`http://localhost:4000/course/${courseID}`)
@@ -45,6 +45,7 @@ export function Course() {
             </div>
         );
     });
+
     return (
         <div className="p-6">
             <h1 className="text-2xl font-bold mb-4">{courseInfo.title}</h1>
