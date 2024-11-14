@@ -77,4 +77,14 @@ func SetupRoutes(app *fiber.App) {
 	app.Put("/update-username", handlers.UpdateUsername) // Update username
 	app.Put("/update-email", handlers.UpdateEmail)       // Update email with confirmation
 	app.Put("/update-password", handlers.UpdatePassword) // Update password and log user off after
+
+	// Routes for courses
+	app.Get("/courses/:user_id", handlers.Courses)
+	app.Get("/course/:course_id", handlers.Course)
+	app.Get("/modules/:course_id", handlers.Modules)
+	app.Get("/content/:module_id", handlers.Content)
+	app.Post("/create-course/:creator_id", handlers.CreateCourse)
+	app.Post("/create-module/:creator_id/:course_id", handlers.CreateModule)
+	app.Post("/create-content/:creator_id/:module_id", handlers.CreateContent)
+	app.Post("/enroll/:user_id/:course_id", handlers.Enroll)
 }
