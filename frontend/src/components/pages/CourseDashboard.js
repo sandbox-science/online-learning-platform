@@ -2,12 +2,53 @@ import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
+import Notiflix from 'notiflix';
 
 export function CourseDashboard() {
     const [courseInfo, setCourseInfo] = useState(null);
     const [userInfo, setUserInfo]     = useState(null);
+    const [newCourse, setNewCourse]   = useState({
+        title: "",
+        description: "",
+    });
     const [error, setError]           = useState(null);
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setNewCourse({ ...newCourse, [name]: value });
+    };
+
+    const handleCreateCourse = async (e) =>{
+        if (newCourse.title === "" || newCourse.description === ""){
+            return
+        } 
+
+        const userId = Cookies.get('userId');
+        try {
+            const response = await fetch(`http://localhost:4000/create-course/${userId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title: newCourse.title,
+                    description: newCourse.description
+                }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                Notiflix.Notify.success("Course creation successful!");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            } else {
+                Notiflix.Notify.failure(data.message || "Course creation failed");
+            }
+        } catch (error) {
+            Notiflix.Notify.failure("Error occurred during course creation");
+        }
+    };
     useEffect(() => {
         const userId = Cookies.get('userId');
 
@@ -68,14 +109,34 @@ export function CourseDashboard() {
             <Popup trigger={<div className="bg-blue-500 p-4 rounded shadow hover:bg-blue-700 m-auto text-center text-xl text-white font-semibold hover:cursor-pointer" > 
                 <div>+ New Course</div> </div>} modal nested>
                 {close => (
-                    <div className='modal'>
-                        <div className='content'>
+                    <div className="flex-auto">
+                        <h3 className="font-semibold">
                             Create New Course
+                        </h3>
+                        <div className="p-2">
+                            <label>Course Name: </label>
+                            <input className="border-2 border-black rounded p-2 size-11/12"
+                            type="text"
+                            name="title"
+                            onChange={handleChange}
+                            />
                         </div>
-                        <div>
-                            <button className="border-2 border-black p-1 rounded" onClick=
+                        <div className="p-2">
+                            <label>Course Description: </label>
+                            <input className="border-2 border-black rounded p-2 size-11/12"
+                            type="text"
+                            name="description"
+                            onChange={handleChange}
+                            />
+                        </div>
+                        <div className="grid grid-rows-1 grid-cols-2">
+                            <button className="justify-self-start border-2 border-black p-1 rounded" onClick=
                                 {() => close()}>
                                     Cancel
+                            </button>
+                            <button className="justify-self-end border-2 border-black p-1 rounded bg-green-400" 
+                                onClick={handleCreateCourse}>
+                                    Create
                             </button>
                         </div>
                     </div>
