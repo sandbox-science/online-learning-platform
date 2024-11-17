@@ -49,6 +49,7 @@ export function CourseDashboard() {
             Notiflix.Notify.failure("Error occurred during course creation");
         }
     };
+
     useEffect(() => {
         const userId = Cookies.get('userId');
 
