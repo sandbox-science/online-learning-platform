@@ -88,9 +88,8 @@ export function CourseDashboard() {
     }, []);
 
     if (error) return <p>Error: {error}</p>;
-    if (!courseInfo) return <p>Loading...</p>;
-    if (!userInfo) return <p>Loading...</p>;
-
+    if (!courseInfo || !userInfo) return <p>Loading...</p>;
+    
     let createButton = null;
     if (userInfo.role === "educator"){
         createButton = <Modal

@@ -25,7 +25,7 @@ export const Modal = ({title, trigger, inputFields, changeHandler, confirmHandle
         fieldList.push(
             <div className="p-2">
                 <label>{text+ ": "} </label>
-                <input className="border-2 border-black rounded p-2 size-11/12"
+                <input className="border-2 border-slate-300 rounded p-2 size-11/12"
                 type="text"
                 name={name}
                 onChange={changeHandler}
@@ -40,17 +40,17 @@ export const Modal = ({title, trigger, inputFields, changeHandler, confirmHandle
             {showModal ? 
             <div>
                 <div className='opacity-50 bg-black fixed top-0 left-0 h-full w-full' onClick={close}/>
-                <div className="flex-auto bg-white rounded-lg border-2 border-black absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3">
+                <div className="flex-auto bg-white rounded-lg border-2 border-slate-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3">
                     <h3 className="font-semibold">
                         {title}
                     </h3>
                     {fieldList}
                     <div className="grid grid-rows-1 grid-cols-2 p-2">
-                        <button className="justify-self-start border-2 border-black p-1 rounded" onClick=
+                        <button className="justify-self-start border-2 border-slate-300 p-1 rounded" onClick=
                             {() => close()}>
                                 Cancel
                         </button>
-                        <button className="justify-self-end border-2 border-black p-1 rounded bg-green-400" onClick={confirmHandler}>
+                        <button className="justify-self-end border-2 border-slate-300 p-1 rounded bg-green-400" onClick={confirmHandler}>
                             Confirm
                         </button>
                     </div> 

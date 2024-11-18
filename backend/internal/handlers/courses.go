@@ -21,11 +21,11 @@ func Courses(c *fiber.Ctx) error {
 
 	var courses []entity.Course
 	// Get all courses that user is enrolled in
-	if user.Role == "educator"{
+	if user.Role == "educator" {
 		if err := database.DB.Model(&entity.Course{}).Where("creator_id = ?", user_id).Find(&courses).Error; err != nil {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Error retrieving courses"})
 		}
-	}else{
+	} else {
 		if err := database.DB.Model(&entity.Course{}).Where("id IN (?)", database.DB.Table("enrollment").Select("course_id").Where("account_id = ?", user_id)).Find(&courses).Error; err != nil {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Error retrieving courses"})
 		}
