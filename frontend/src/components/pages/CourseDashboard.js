@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import Popup from 'reactjs-popup';
-import 'reactjs-popup/dist/index.css';
 import Notiflix from 'notiflix';
+import {Modal} from '../Modal.js';
 
 export function CourseDashboard() {
     const [courseInfo, setCourseInfo] = useState(null);
@@ -94,45 +93,20 @@ export function CourseDashboard() {
 
     let createButton = null;
     if (userInfo.role === "educator"){
-        createButton =
-        <Popup trigger={<div className="bg-blue-500 p-2 rounded shadow hover:bg-blue-700 text-center text-sm text-white font-semibold hover:cursor-pointer" > 
-            <div>+ New Course</div> </div>} modal nested>
-            {close => (
-                <div className="flex-auto">
-                    <h3 className="font-semibold">
-                        Create New Course
-                    </h3>
-                    <div className="p-2">
-                        <label>Course Name: </label>
-                        <input className="border-2 border-black rounded p-2 size-11/12"
-                        type="text"
-                        name="title"
-                        onChange={handleChange}
-                        />
-                    </div>
-                    <div className="p-2">
-                        <label>Course Description: </label>
-                        <input className="border-2 border-black rounded p-2 size-11/12"
-                        type="text"
-                        name="description"
-                        onChange={handleChange}
-                        />
-                    </div>
-                    <div className="grid grid-rows-1 grid-cols-2">
-                        <button className="justify-self-start border-2 border-black p-1 rounded" onClick=
-                            {() => close()}>
-                                Cancel
-                        </button>
-                        <button className="justify-self-end border-2 border-black p-1 rounded bg-green-400" 
-                            onClick={handleCreateCourse}>
-                                Create
-                        </button>
-                    </div>
+        createButton = <Modal
+            title={"Create New Course"}
+            trigger={
+                <div className="bg-blue-500 p-2 rounded shadow hover:bg-blue-700 m-auto text-center text-sm text-white font-semibold hover:cursor-pointer" > 
+                    <div>+ New Course</div> 
                 </div>
-                )
             }
-        </Popup>
-        
+            inputFields={{
+                title : "Course Name",
+                description : "Course Description"
+            }}
+            changeHandler={handleChange}
+            confirmHandler={handleCreateCourse}
+        />
     }
 
     var courseList = [];
