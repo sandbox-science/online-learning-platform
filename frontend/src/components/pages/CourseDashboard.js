@@ -57,7 +57,8 @@ export function CourseDashboard() {
             return;
         }
 
-        fetch(`http://localhost:4000/courses/${userId}`)
+        async function fetchCourses() {
+            await fetch(`http://localhost:4000/courses/${userId}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -66,17 +67,10 @@ export function CourseDashboard() {
             })
             .then((data) => setCourseInfo(data.courses))
             .catch((error) => setError(error.message));
-    }, []);
-
-    useEffect(() => {
-        const userId = Cookies.get('userId');
-
-        if (!userId) {
-            setError('User ID not found');
-            return;
         }
 
-        fetch(`http://localhost:4000/user/${userId}`)
+        async function fetchUser() {
+            await fetch(`http://localhost:4000/user/${userId}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -85,11 +79,15 @@ export function CourseDashboard() {
             })
             .then((data) => setUserInfo(data.user))
             .catch((error) => setError(error.message));
+        }
+
+        fetchCourses();
+        fetchUser();
     }, []);
 
     if (error) return <p>Error: {error}</p>;
     if (!courseInfo || !userInfo) return <p>Loading...</p>;
-    
+
     let createButton = null;
     if (userInfo.role === "educator"){
         createButton = <Modal
