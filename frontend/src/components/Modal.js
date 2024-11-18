@@ -40,7 +40,7 @@ export const Modal = ({title, trigger, inputFields, changeHandler, confirmHandle
             {showModal ? 
             <div>
                 <div className='opacity-50 bg-black fixed top-0 left-0 h-full w-full' onClick={close}/>
-                <div className="flex-auto bg-white rounded-lg border-2 border-slate-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3">
+                <div className="flex-auto bg-white rounded-lg border-2 border-slate-300 absolute min-w-80 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3">
                     <h3 className="font-semibold">
                         {title}
                     </h3>
