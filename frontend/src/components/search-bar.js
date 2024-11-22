@@ -1,6 +1,6 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
-export default function SearchBar({ onChange, disabled }) {
+export default function SearchBar({ onChange }) {
   return (
     <div className="grow">
       <label htmlFor="default-search" className="pt-2 text-sm font-medium sr-only">Search</label>
@@ -14,7 +14,6 @@ export default function SearchBar({ onChange, disabled }) {
           id="default-search"
           className="input w-full max-w-md pl-8 h-12 rounded-lg border"
           placeholder="Search for a course..."
-          disabled={disabled}
         />
       </div>
     </div>

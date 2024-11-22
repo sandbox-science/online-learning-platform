@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 
-export const Modal = ({ title, trigger, inputFields, changeHandler, confirmHandler, onToggle }) => {
+export const Modal = ({ title, trigger, inputFields, changeHandler, confirmHandler }) => {
     const [showModal, setShowModal] = useState(false);
 
     const close = () => {
         setShowModal(false);
-        if (onToggle) onToggle(false);
     };
 
     const open = () => {
         setShowModal(true);
-        if (onToggle) onToggle(true);
     };
 
     const fieldList = Object.entries(inputFields).map(([name, text]) => (

@@ -13,7 +13,6 @@ export function CourseDashboard() {
     });
     const [searchQuery, setSearchQuery]     = useState("");
     const [error, setError]                 = useState(null);
-    const [isModalActive, setIsModalActive] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -112,9 +111,7 @@ export function CourseDashboard() {
                 changeHandler={handleChange}
                 confirmHandler={async () => {
                     await handleCreateCourse();
-                    setIsModalActive(false);
                 }}
-                onToggle={setIsModalActive}
             />
 
         );
@@ -141,7 +138,7 @@ export function CourseDashboard() {
             <div className="mb-5">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                     {createButton}
-                    <SearchBar onChange={handleSearchChange} disabled={isModalActive} />
+                    <SearchBar onChange={handleSearchChange} />
                 </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
