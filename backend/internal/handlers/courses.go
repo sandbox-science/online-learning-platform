@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"fmt"
+	"os"
 	"strconv"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/sandbox-science/online-learning-platform/configs/database"
@@ -83,8 +85,8 @@ func Modules(c *fiber.Ctx) error {
 	})
 }
 
-// Content function retrieves the content of a module
-func Content(c *fiber.Ctx) error {
+// AllContent function retrieves the content of a module
+func AllContent(c *fiber.Ctx) error {
 	module_id := c.Params("module_id")
 
 	var module entity.Module
@@ -100,6 +102,22 @@ func Content(c *fiber.Ctx) error {
 			"message": "No content in module",
 			"content": []string{},
 		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Content successfully retrieved",
+		"content": content,
+	})
+}
+
+// Content function retrieves a single peice of content by id
+func Content(c *fiber.Ctx) error {
+	content_id := c.Params("content_id")
+
+	var content entity.Content
+	// Check if the module exists
+	if err := database.DB.Where("id = ?", content_id).First(&content).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Content not found"})
 	}
 
 	return c.JSON(fiber.Map{
@@ -232,8 +250,8 @@ func CreateContent(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid module_id"})
 	}
 
-	var data map[string]string
-	if err := c.BodyParser(&data); err != nil {
+	title := c.FormValue("title")
+	if title == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
 	}
 
@@ -247,17 +265,37 @@ func CreateContent(c *fiber.Ctx) error {
 	if module.Course.CreatorID != creator_id {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User is not the course creator"})
 	}
-
-	// Create content
+	
+	// Create content database entry
 	content := entity.Content{
-		Title:  data["title"],
+		Title:  title,
 		Module: module,
 	}
 
-	content.Path = fmt.Sprintf("content/%d/%d", module.Course.ID, content.ID)
-
-	// Add content to database
+	// Create content entry
 	if err := database.DB.Create(&content).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+	}
+
+	//Save file
+	file, err := c.FormFile("file");
+	if err != nil{
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid file"})
+	}
+
+	var fileExtension =  file.Filename[strings.LastIndex(file.Filename, "."):]
+
+	if err := os.MkdirAll(fmt.Sprintf("./content/%d/", module.Course.ID), 0777); err != nil{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+	}
+	
+	path := fmt.Sprintf("/%d/%s", module.Course.ID, strconv.FormatUint(uint64(content.ID), 10) + fileExtension)
+	if err := c.SaveFile(file, "./content"+path); err != nil{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+	}
+	
+	// Add the path
+	if err := database.DB.Model(&content).Update("path", path).Error; err != nil{
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 	}
 

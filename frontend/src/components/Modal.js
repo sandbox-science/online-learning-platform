@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export const Modal = ({ title, trigger, inputFields, changeHandler, confirmHandler }) => {
+export const Modal = ({ title, trigger, inputFields, changeHandler, confirmHandler, fileUploadHandler = null}) => {
     const [showModal, setShowModal] = useState(false);
 
     const close = () => {
@@ -37,6 +37,12 @@ export const Modal = ({ title, trigger, inputFields, changeHandler, confirmHandl
                     <div className="fixed z-[1050] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-lg shadow-lg border-2 border-slate-300 absolute min-w-80">
                         <h3 className="font-semibold text-lg mb-4">{title}</h3>
                         {fieldList}
+                        {fileUploadHandler != null ? (
+                        <div>
+                            <h1>File Upload</h1>
+                            <input type="file" onChange={fileUploadHandler}/>
+                        </div>) : null
+                        }
                         <div className="mt-4 flex justify-end space-x-2">
                             <button
                                 className="px-4 py-2 border border-gray-300 rounded bg-gray-200 hover:bg-gray-300"

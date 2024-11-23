@@ -9,17 +9,20 @@ export function Course() {
     const [courseInfo, setCourseInfo] = useState(null);
     const [userInfo, setUserInfo]     = useState(null);
     const [error, setError]           = useState(null);
+    const [file, setFile]             = useState(null);
+    const [newContentName, setNewContentName] = useState({
+        title: "",
+    });
     const [newModuleName, setNewModuleName] = useState({
         title: "",
     });
 
-    const handleChange = (e) => {
+    const handleModuleChange = (e) => {
         const { name, value } = e.target;
         setNewModuleName({[name]: value });
     };
 
     const handleCreateModule = async (e) =>{
-        console.log(newModuleName)
         if (newModuleName.title === ""){
             return
         } 
@@ -47,6 +50,44 @@ export function Course() {
             }
         } catch (error) {
             Notiflix.Notify.failure("Error occurred during module creation");
+        }
+    };
+
+    const handleContentChange = (e) => {
+        const { name, value } = e.target;
+        setNewContentName({[name]: value });
+    };
+
+    const handleContentUpload = (e) => {
+        setFile(e.target.files[0]);
+    }
+
+    const handleCreateContent = (moduleID) => async (e) =>{
+        if (newContentName.title === "" || file === null){
+            return
+        } 
+
+        const userId = Cookies.get('userId');
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("title", newContentName.title);
+            const response = await fetch(`http://localhost:4000/create-content/${userId}/${moduleID}`, {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                Notiflix.Notify.success("Content creation successful!");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            } else {
+                Notiflix.Notify.failure(data.message || "Content creation failed");
+            }
+        } catch (error) {
+            Notiflix.Notify.failure("Error occurred during content creation");
         }
     };
 
@@ -102,16 +143,45 @@ export function Course() {
                 </a>
             )
         })
-        moduleList.push(
-            <div>
-                <div className="bg-slate-400 p-4 rounded shadow" >
-                    <h3 className="text-xl font-semibold" >{module.title}</h3>
-                </div>
+        if (userInfo.role === "educator"){
+            moduleList.push(
                 <div>
-                    {contentList}
+                    <div className="flex justify-between flex-wrap bg-slate-400 p-4 rounded shadow" >
+                        <h3 className="text-xl font-semibold" >
+                            {module.title}
+                        </h3>
+                        <Modal
+                            title={"Add New Content"}
+                            trigger={
+                                <div className="bg-blue-500 p-2 rounded shadow hover:bg-blue-700 m-auto text-center text-sm text-white font-semibold hover:cursor-pointer" > 
+                                    <div>+ Add Content</div> 
+                                </div>
+                            }
+                            inputFields={{
+                                title : "Content Name",
+                            }}
+                            changeHandler={handleContentChange}
+                            confirmHandler={handleCreateContent(module.ID)}
+                            fileUploadHandler={handleContentUpload}
+                        />
+                    </div>
+                    <div>
+                        {contentList}
+                    </div>
                 </div>
-            </div>
-        );
+            );
+        } else {
+            moduleList.push(
+                <div>
+                    <div className="bg-slate-400 p-4 rounded shadow" >
+                        <h3 className="text-xl font-semibold" >{module.title}</h3>
+                    </div>
+                    <div>
+                        {contentList}
+                    </div>
+                </div>
+            );
+        }
     });
 
     let createButton = null;
@@ -126,7 +196,7 @@ export function Course() {
             inputFields={{
                 title : "Module Name",
             }}
-            changeHandler={handleChange}
+            changeHandler={handleModuleChange}
             confirmHandler={handleCreateModule}
         />
     }
