@@ -218,7 +218,7 @@ func CreateModule(c *fiber.Ctx) error {
 
 	//Verify that the account attempting to create a module is the creator of the course
 	if course.CreatorID != creator_id {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User is not the course creator"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "User is not the course creator"})
 	}
 
 	// Create module
@@ -263,7 +263,7 @@ func CreateContent(c *fiber.Ctx) error {
 
 	//Verify that the account attempting to create content is the creator of the course
 	if module.Course.CreatorID != creator_id {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User is not the course creator"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "User is not the course creator"})
 	}
 	
 	// Create content database entry
@@ -277,30 +277,84 @@ func CreateContent(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 	}
 
-	//Save file
-	file, err := c.FormFile("file");
-	if err != nil{
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid file"})
-	}
-
-	var fileExtension =  file.Filename[strings.LastIndex(file.Filename, "."):]
-
-	if err := os.MkdirAll(fmt.Sprintf("./content/%d/", module.Course.ID), 0777); err != nil{
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
-	}
-	
-	path := fmt.Sprintf("/%d/%s", module.Course.ID, strconv.FormatUint(uint64(content.ID), 10) + fileExtension)
-	if err := c.SaveFile(file, "./content"+path); err != nil{
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
-	}
-	
-	// Add the path
-	if err := database.DB.Model(&content).Update("path", path).Error; err != nil{
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
-	}
-
 	return c.JSON(fiber.Map{
 		"message": "Content created successfully",
 		"content": content,
+	})
+}
+
+// Edit content inside a module
+func EditContent(c *fiber.Ctx) error {
+	creator_id, err := strconv.Atoi(c.Params("creator_id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid creator_id"})
+	}
+
+	content_id, err := strconv.Atoi(c.Params("content_id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid content_id"})
+	}
+
+	var content entity.Content
+	// Check if the content exists
+	if err := database.DB.Model(entity.Content{}).Preload("Module.Course").Where("id = ?", content_id).First(&content).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Course not found"})
+	}
+
+	module := content.Module
+	//Verify that the account attempting to edit is the creator of the course
+	if module.Course.CreatorID != creator_id {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "User is not the course creator"})
+	}
+	
+	title := c.FormValue("title")
+	if title != "" {
+		if err := database.DB.Model(&content).Update("title", title).Error; err != nil{
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+		}
+	}
+
+	body := c.FormValue("body")
+	if body != "" {
+		if err := database.DB.Model(&content).Update("body", body).Error; err != nil{
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+		}
+	}
+	
+	file, err := c.FormFile("file");
+	if err != nil {
+		if err.Error() != "there is no uploaded file associated with the given key"{
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid file"})
+		}
+	}
+
+	if file != nil {
+		var fileExtension =  file.Filename[strings.LastIndex(file.Filename, "."):]
+
+		if err := os.MkdirAll(fmt.Sprintf("./content/%d/", module.Course.ID), 0777); err != nil{
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+		}
+		
+		path := fmt.Sprintf("/%d/%s", module.Course.ID, strconv.FormatUint(uint64(content.ID), 10) + fileExtension)
+
+		//Remove previous attachment if there is one
+		if _, err := os.Stat("./content"+path); os.IsExist(err){
+			if err := os.Remove("./content"+path); err != nil{
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+			}
+		}
+		
+		if err := c.SaveFile(file, "./content"+path); err != nil{
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+		}
+		
+		// Add the path
+		if err := database.DB.Model(&content).Update("path", path).Error; err != nil{
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+		}
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Successfully updated content",
 	})
 }

@@ -6,6 +6,7 @@ type Content struct {
 	gorm.Model
 	Title    string `gorm:"size:255;not null;" json:"title"`
 	Path     string `gorm:"size:255;not null;" json:"path"`
+	Body     string `gorm:"size:2000;" json:"body"`
 	ModuleID uint
 	Module   Module `gorm:"foreignKey:ModuleID;references:ID" json:"-"`
 }

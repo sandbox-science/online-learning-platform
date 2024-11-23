@@ -9,7 +9,6 @@ export function Course() {
     const [courseInfo, setCourseInfo] = useState(null);
     const [userInfo, setUserInfo]     = useState(null);
     const [error, setError]           = useState(null);
-    const [file, setFile]             = useState(null);
     const [newContentName, setNewContentName] = useState({
         title: "",
     });
@@ -58,19 +57,14 @@ export function Course() {
         setNewContentName({[name]: value });
     };
 
-    const handleContentUpload = (e) => {
-        setFile(e.target.files[0]);
-    }
-
     const handleCreateContent = (moduleID) => async (e) =>{
-        if (newContentName.title === "" || file === null){
+        if (newContentName.title === ""){
             return
         } 
 
         const userId = Cookies.get('userId');
         try {
             const formData = new FormData();
-            formData.append("file", file);
             formData.append("title", newContentName.title);
             const response = await fetch(`http://localhost:4000/create-content/${userId}/${moduleID}`, {
                 method: "POST",
@@ -162,7 +156,6 @@ export function Course() {
                             }}
                             changeHandler={handleContentChange}
                             confirmHandler={handleCreateContent(module.ID)}
-                            fileUploadHandler={handleContentUpload}
                         />
                     </div>
                     <div>
@@ -207,7 +200,6 @@ export function Course() {
                 <h1 className="text-2xl font-bold mb-4">{courseInfo.title}</h1>
                 {createButton}
             </div>
-            
             <div className="grid grid-cols-1 gap-6">
                 {moduleList}
             </div>
