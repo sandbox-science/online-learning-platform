@@ -26,7 +26,7 @@ export function Content() {
         setFile(e.target.files[0]);
     }
 
-    const handleEditContent = (contentID) => async (e) =>{
+    const handleEditContent = (contentID) => async (e) => {
         if (newContentInfo.title === "" && newContentInfo.body === "" && file === null){
             return
         } 
@@ -53,6 +53,27 @@ export function Content() {
             }
         } catch (error) {
             Notiflix.Notify.failure("Error occurred during content creation");
+        }
+    };
+
+    const handleDeleteFile = (contentID) => async (e) => {
+        const userId = Cookies.get('userId');
+        try {
+            const response = await fetch(`http://localhost:4000/delete-file/${userId}/${contentID}`, {
+                method: "POST"
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                Notiflix.Notify.success("File successfully deleted!");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            } else {
+                Notiflix.Notify.failure(data.message || "File deletion failed");
+            }
+        } catch (error) {
+            Notiflix.Notify.failure("Error occurred during file deletion");
         }
     };
 
@@ -125,6 +146,7 @@ export function Content() {
                 changeHandler={handleContentChange}
                 confirmHandler={handleEditContent(contentID)}
                 fileUploadHandler={handleContentUpload}
+                deleteFileHandler={contentInfo.path !== "" ? handleDeleteFile(contentID) : null}
             />
 
         );

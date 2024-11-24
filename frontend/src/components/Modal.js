@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export const Modal = ({ title, trigger, inputFields, changeHandler, confirmHandler, fileUploadHandler = null}) => {
+export const Modal = ({ title, trigger, inputFields, changeHandler, confirmHandler, fileUploadHandler, deleteFileHandler}) => {
     const [showModal, setShowModal] = useState(false);
 
     const close = () => {
@@ -46,10 +46,20 @@ export const Modal = ({ title, trigger, inputFields, changeHandler, confirmHandl
                         <h3 className="font-semibold text-lg mb-4">{title}</h3>
                         {fieldList}
                         {fileUploadHandler != null ? (
-                        <div>
-                            <h1>File Upload</h1>
-                            <input type="file" onChange={fileUploadHandler}/>
-                        </div>) : null
+                            <div>
+                                <h1>File Upload</h1>
+                                <input type="file" onChange={fileUploadHandler}/>
+                            </div>) : null
+                        }
+                        {deleteFileHandler != null ? (
+                            <div>
+                                <button
+                                    className="px-4 py-2 mt-2 border border-gray-300 rounded bg-red-500 text-white hover:bg-red-700"
+                                    onClick={deleteFileHandler}
+                                >
+                                    Delete Current File
+                                </button>
+                            </div>) : null
                         }
                         <div className="mt-4 flex justify-end space-x-2">
                             <button

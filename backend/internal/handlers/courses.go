@@ -364,3 +364,44 @@ func EditContent(c *fiber.Ctx) error {
 		"message": "Successfully updated content",
 	})
 }
+
+// Delete file from content
+func DeleteFile(c *fiber.Ctx) error {
+	creator_id, err := strconv.Atoi(c.Params("creator_id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid creator_id"})
+	}
+
+	content_id, err := strconv.Atoi(c.Params("content_id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid content_id"})
+	}
+
+	var content entity.Content
+	// Check if the content exists
+	if err := database.DB.Model(entity.Content{}).Preload("Module.Course").Where("id = ?", content_id).First(&content).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Course not found"})
+	}
+
+	module := content.Module
+	//Verify that the account attempting to edit is the creator of the course
+	if module.Course.CreatorID != creator_id {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "User is not the course creator"})
+	}
+	
+	//Delete file
+	if _, err := os.Stat("./content"+content.Path); os.IsExist(err){
+		if err := os.Remove("./content"+content.Path); err != nil{
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+		}
+	}
+
+	//Update database entry
+	if err := database.DB.Model(&content).Update("path", "").Error; err != nil{
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+	}
+	
+	return c.JSON(fiber.Map{
+		"message": "Successfully deleted file",
+	})
+}
