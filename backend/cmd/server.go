@@ -15,7 +15,7 @@ import (
 
 // initServer initializes the server and returns the Fiber server and the initialized database connection.
 func initServer() (*fiber.App, *gorm.DB, error) {
-	app := fiber.New(fiber.Config{})
+	app := fiber.New(fiber.Config{BodyLimit: 500 * 1024 * 1024})
 
 	// Initialize the database configuration
 	conf := entity.Config{
