@@ -352,6 +352,12 @@ func EditContent(c *fiber.Ctx) error {
 		if err := database.DB.Model(&content).Update("path", path).Error; err != nil{
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 		}
+
+		// Add the type
+		filetype := file.Header.Get("Content-Type")
+		if err := database.DB.Model(&content).Update("type", filetype).Error; err != nil{
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+		}
 	}
 
 	return c.JSON(fiber.Map{

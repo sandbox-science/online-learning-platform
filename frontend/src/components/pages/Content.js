@@ -130,6 +130,18 @@ export function Content() {
         );
     }
 
+    let attachment = null;
+    if (contentInfo.path !== "") {
+        let mediaType = contentInfo.type.split("/")[0];
+        if (mediaType === "image") {
+            attachment = <img src={process.env.PUBLIC_URL + "/content" + contentInfo.path} alt="Uploaded File"/>
+        } else if (mediaType === "video") {
+            attachment = <iframe src={process.env.PUBLIC_URL + "/content" + contentInfo.path} className="w-screen lg:max-w-5xl max-w-[90%] aspect-video" title="Uploaded File"/> 
+        } else {
+            attachment = <iframe src={process.env.PUBLIC_URL + "/content" + contentInfo.path} className="w-[82vw] h-[82vh]" title="Uploaded File"/> 
+        }
+    } 
+
     return (
         <div className="p-6">
             <div className="flex justify-between">
@@ -144,10 +156,7 @@ export function Content() {
             <div>
                 {contentInfo.body}
             </div>
-            {contentInfo.path !== "" ?
-                <img src={process.env.PUBLIC_URL + "/content" + contentInfo.path} alt=""/> : null
-            }
+            {attachment}
         </div>
-
     );
 }
