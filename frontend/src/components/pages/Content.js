@@ -148,7 +148,6 @@ export function Content() {
                 fileUploadHandler={handleContentUpload}
                 deleteFileHandler={contentInfo.path !== "" ? handleDeleteFile(contentID) : null}
             />
-
         );
     }
 
