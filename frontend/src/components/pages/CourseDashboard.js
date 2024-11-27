@@ -11,8 +11,10 @@ export function CourseDashboard() {
         title: "",
         description: "",
     });
-    const [searchQuery, setSearchQuery]     = useState("");
-    const [error, setError]                 = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [error, setError]             = useState(null);
+    const [courses, setCourses]         = useState([]);
+    const [loading, setLoading]         = useState(true);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -87,6 +89,21 @@ export function CourseDashboard() {
                 .catch((error) => setError(error.message));
         }
 
+        async function fetchAllCourses() {
+            try {
+                const response = await fetch('http://localhost:4000/course/');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setCourses(data.courses || []);
+                setLoading(false);
+            } catch (error) {
+                setLoading(false);
+            }
+        }
+        fetchAllCourses();
+
         fetchCourses();
         fetchUser();
     }, []);
@@ -117,11 +134,11 @@ export function CourseDashboard() {
         );
     }
 
-    const filteredCourses = courseInfo.filter((course) =>
+    const filteredCourses = courses.filter((course) =>
         course.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const courseList = filteredCourses.map((course) => (
+    const myCourses = courseInfo.map((course) => (
         <a href={`/courses/${course.ID}`} key={course.ID}>
             <div className="bg-gray-100 p-4 rounded shadow hover:bg-gray-300">
                 <h3 className="text-xl font-semibold truncate overflow-hidden">{course.title}</h3>
@@ -129,6 +146,15 @@ export function CourseDashboard() {
             </div>
         </a>
     ));
+
+    const allCourses = filteredCourses.map((course) => (
+        <div key={course.ID} className="course-box">
+            <a href={`/courses/${course.ID}`} key={course.ID}>
+                <h3><b>{course.title}</b></h3>
+                <p>{course.description}</p>
+            </a>
+        </div>
+    ))
 
     return (
         <div className="p-6">
@@ -141,8 +167,31 @@ export function CourseDashboard() {
                     <SearchBar onChange={handleSearchChange} />
                 </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {courseList}
+
+            {/* My Courses Section */}
+            <div className="mt-10">
+                <h2 className="text-xl font-semibold mb-4">My Courses</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {myCourses}
+                </div>
+            </div>
+
+            {/* All Courses Section */}
+            <div className="mt-10">
+                <h2 className="text-xl font-semibold mb-4">All Courses</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="course-list">
+                        {loading ? (
+                            <p>Loading courses...</p>
+                        ) : filteredCourses.length > 0 ? (
+                            allCourses
+                        ) : (
+                            <div className="course-box">
+                                <p>Nothing to show, yet</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );
