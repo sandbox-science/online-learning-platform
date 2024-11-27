@@ -157,7 +157,7 @@ export function Content() {
         if (mediaType === "image") {
             attachment = <img src={process.env.PUBLIC_URL + "/content" + contentInfo.path} alt="Uploaded File"/>
         } else if (mediaType === "video") {
-            attachment = <iframe src={process.env.PUBLIC_URL + "/content" + contentInfo.path} className="w-screen lg:max-w-5xl max-w-[90%] aspect-video" title="Uploaded File"/> 
+            attachment = <iframe src={process.env.PUBLIC_URL + "/content" + contentInfo.path} className="w-screen lg:max-w-7xl max-w-[90%] aspect-video" title="Uploaded File"/> 
         } else {
             attachment = <iframe src={process.env.PUBLIC_URL + "/content" + contentInfo.path} className="w-[82vw] h-[82vh]" title="Uploaded File"/> 
         }
@@ -177,7 +177,9 @@ export function Content() {
             <div>
                 {contentInfo.body}
             </div>
-            {attachment}
+            <div className="flex flex-auto justify-center m-5"> 
+                {attachment}
+            </div>
         </div>
     );
 }
