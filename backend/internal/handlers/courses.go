@@ -48,18 +48,45 @@ func Courses(c *fiber.Ctx) error {
 
 // Course function retrieves an indiviudal course from its id
 func Course(c *fiber.Ctx) error {
-	course_id := c.Params("course_id")
+	courseID := c.Params("course_id")
 
+	var courses []entity.Course
 	var course entity.Course
-	// Check if the course exists
-	if err := database.DB.Preload("Students").Preload("Modules").Preload("Modules.Content").Preload("Tags").Where("id = ?", course_id).First(&course).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Course not found"})
-	}
 
-	return c.JSON(fiber.Map{
-		"message": "Course successfully retrieved",
-		"course":  course,
-	})
+	if courseID != "" {
+		// Check if the specific course exists
+		if err := database.DB.
+			Preload("Students").
+			Preload("Modules").
+			Preload("Modules.Content").
+			Preload("Tags").
+			Where("id = ?", courseID).
+			First(&course).Error; err != nil {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Course not found"})
+		}
+
+		// Return the specific course
+		return c.JSON(fiber.Map{
+			"message": "Course successfully retrieved",
+			"course":  course,
+		})
+	} else {
+		// Load all courses
+		if err := database.DB.
+			Preload("Students").
+			Preload("Modules").
+			Preload("Modules.Content").
+			Preload("Tags").
+			Find(&courses).Error; err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Could not load courses"})
+		}
+
+		// Return all courses
+		return c.JSON(fiber.Map{
+			"message": "All courses successfully retrieved",
+			"courses": courses,
+		})
+	}
 }
 
 // Modules function retrieves the modules of a course
@@ -265,7 +292,7 @@ func CreateContent(c *fiber.Ctx) error {
 	if module.Course.CreatorID != creator_id {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "User is not the course creator"})
 	}
-	
+
 	// Create content database entry
 	content := entity.Content{
 		Title:  title,
@@ -306,56 +333,56 @@ func EditContent(c *fiber.Ctx) error {
 	if module.Course.CreatorID != creator_id {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "User is not the course creator"})
 	}
-	
+
 	title := c.FormValue("title")
 	if title != "" {
-		if err := database.DB.Model(&content).Update("title", title).Error; err != nil{
+		if err := database.DB.Model(&content).Update("title", title).Error; err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 		}
 	}
 
 	body := c.FormValue("body")
 	if body != "" {
-		if err := database.DB.Model(&content).Update("body", body).Error; err != nil{
+		if err := database.DB.Model(&content).Update("body", body).Error; err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 		}
 	}
-	
-	file, err := c.FormFile("file");
+
+	file, err := c.FormFile("file")
 	if err != nil {
-		if err.Error() != "there is no uploaded file associated with the given key"{
+		if err.Error() != "there is no uploaded file associated with the given key" {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid file"})
 		}
 	}
 
 	if file != nil {
-		var fileExtension =  file.Filename[strings.LastIndex(file.Filename, "."):]
+		var fileExtension = file.Filename[strings.LastIndex(file.Filename, "."):]
 
-		if err := os.MkdirAll(fmt.Sprintf("./content/%d/", module.Course.ID), 0777); err != nil{
+		if err := os.MkdirAll(fmt.Sprintf("./content/%d/", module.Course.ID), 0777); err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 		}
-		
-		path := fmt.Sprintf("/%d/%s", module.Course.ID, strconv.FormatUint(uint64(content.ID), 10) + fileExtension)
+
+		path := fmt.Sprintf("/%d/%s", module.Course.ID, strconv.FormatUint(uint64(content.ID), 10)+fileExtension)
 
 		//Remove previous attachment if there is one
-		if _, err := os.Stat("./content"+path); os.IsExist(err){
-			if err := os.Remove("./content"+path); err != nil{
+		if _, err := os.Stat("./content" + path); os.IsExist(err) {
+			if err := os.Remove("./content" + path); err != nil {
 				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 			}
 		}
-		
-		if err := c.SaveFile(file, "./content"+path); err != nil{
+
+		if err := c.SaveFile(file, "./content"+path); err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 		}
-		
+
 		// Add the path
-		if err := database.DB.Model(&content).Update("path", path).Error; err != nil{
+		if err := database.DB.Model(&content).Update("path", path).Error; err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 		}
 
 		// Add the type
 		filetype := file.Header.Get("Content-Type")
-		if err := database.DB.Model(&content).Update("type", filetype).Error; err != nil{
+		if err := database.DB.Model(&content).Update("type", filetype).Error; err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 		}
 	}
@@ -388,19 +415,19 @@ func DeleteFile(c *fiber.Ctx) error {
 	if module.Course.CreatorID != creator_id {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "User is not the course creator"})
 	}
-	
+
 	//Delete file
-	if _, err := os.Stat("./content"+content.Path); os.IsExist(err){
-		if err := os.Remove("./content"+content.Path); err != nil{
+	if _, err := os.Stat("./content" + content.Path); os.IsExist(err) {
+		if err := os.Remove("./content" + content.Path); err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 		}
 	}
 
 	//Update database entry
-	if err := database.DB.Model(&content).Update("path", "").Error; err != nil{
+	if err := database.DB.Model(&content).Update("path", "").Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 	}
-	
+
 	return c.JSON(fiber.Map{
 		"message": "Successfully deleted file",
 	})
