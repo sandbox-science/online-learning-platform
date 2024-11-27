@@ -82,9 +82,12 @@ func SetupRoutes(app *fiber.App) {
 	app.Get("/courses/:user_id", handlers.Courses)
 	app.Get("/course/:course_id", handlers.Course)
 	app.Get("/modules/:course_id", handlers.Modules)
-	app.Get("/content/:module_id", handlers.Content)
+	app.Get("/content/:content_id", handlers.Content)
+	app.Get("/all-content/:module_id", handlers.AllContent)
 	app.Post("/create-course/:creator_id", handlers.CreateCourse)
 	app.Post("/create-module/:creator_id/:course_id", handlers.CreateModule)
 	app.Post("/create-content/:creator_id/:module_id", handlers.CreateContent)
+	app.Post("/delete-file/:creator_id/:content_id", handlers.DeleteFile)
+	app.Post("/edit-content/:creator_id/:content_id", handlers.EditContent)
 	app.Post("/enroll/:user_id/:course_id", handlers.Enroll)
 }
