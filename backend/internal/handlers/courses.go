@@ -365,10 +365,12 @@ func EditContent(c *fiber.Ctx) error {
 		path := fmt.Sprintf("/%d/%s", module.Course.ID, strconv.FormatUint(uint64(content.ID), 10)+fileExtension)
 
 		//Remove previous attachment if there is one
-		if _, err := os.Stat("./content" + path); os.IsExist(err) {
+		if _, err := os.Stat("./content" + path); err == nil {
 			if err := os.Remove("./content" + path); err != nil {
 				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 			}
+		} else if !os.IsNotExist(err){
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 		}
 
 		if err := c.SaveFile(file, "./content"+path); err != nil {
@@ -417,10 +419,12 @@ func DeleteFile(c *fiber.Ctx) error {
 	}
 
 	//Delete file
-	if _, err := os.Stat("./content" + content.Path); os.IsExist(err) {
+	if _, err := os.Stat("./content" + content.Path); err == nil {
 		if err := os.Remove("./content" + content.Path); err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 		}
+	} else {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 	}
 
 	//Update database entry
