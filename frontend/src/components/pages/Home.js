@@ -41,7 +41,7 @@ export function Home() {
                     </a>
                 </div>
                 <div className="feature-box">
-                    <a href="#top" target="_blank" rel="noreferrer">
+                    <a href="https://github.com/sandbox-science/online-learning-platform/blob/main/README.md" target="_blank" rel="noreferrer">
                         <h3><b>MISSION</b></h3>
                         <p>Learn more about our mission and vision.</p>
                     </a>
