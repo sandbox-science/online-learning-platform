@@ -62,16 +62,34 @@ export function Home() {
                         <p>Loading courses...</p>
                     ) : courses.length > 0 ? (
                         courses.map((course) => (
-                            <div key={course.ID} className="course-box">
-                                <a href={`/courses/${course.ID}`} key={course.ID}>
-                                    <h3><b>{course.title}</b></h3>
-                                </a>
-                                <p>{course.description}</p>
-                            </div>
+                            <a
+                                href={`/courses/${course.ID}`}
+                                key={course.ID}
+                                className="w-[12rem] aspect-[9/8]"
+                            >
+                                <div className="bg-gray-100 rounded shadow hover:bg-gray-300 flex flex-col h-full w-full outline outline-1 outline-black/25">
+                                    <div className="h-[60%]">
+                                        <img
+                                            className="rounded outline outline-1 outline-black/40 object-cover w-full h-full"
+                                            src={process.env.PUBLIC_URL + `/content/${course.ID}/thumbnail.png`}
+                                            onError={(e) => {
+                                                e.target.onError = null;
+                                                e.target.src = `/default_thumbnails/tn${course.ID % 5}.png`;
+                                            }}
+                                            alt="Thumbnail"
+                                        />
+                                    </div>
+                                    <div className="h-[40%] p-3 overflow-hidden flex flex-col justify-center">
+                                        <h3 className="text-lg font-semibold truncate">{course.title}</h3>
+                                        <p className="truncate text-sm">{course.description}</p>
+                                    </div>
+                                </div>
+                            </a>
+
                         ))
                     ) : (
-                        <div className="course-box">
-                            <h3><b>Placeholder</b></h3>
+                        <div className="col-span-full text-center">
+                            <h3 className="text-lg font-bold">Placeholder</h3>
                             <p>Nothing to show, yet</p>
                         </div>
                     )}
