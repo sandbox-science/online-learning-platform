@@ -9,6 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/sandbox-science/online-learning-platform/configs/database"
 	"github.com/sandbox-science/online-learning-platform/internal/entity"
+	"gorm.io/gorm"
 )
 
 // Courses function retrieves enrolled course titles and descriptions based on user_id from the URL
@@ -58,7 +59,9 @@ func Course(c *fiber.Ctx) error {
 		if err := database.DB.
 			Preload("Students").
 			Preload("Modules").
-			Preload("Modules.Content").
+			Preload("Modules.Content", func(db *gorm.DB) *gorm.DB {
+				return db.Order("id ASC")
+			  }).
 			Preload("Tags").
 			Where("id = ?", courseID).
 			First(&course).Error; err != nil {
