@@ -11,26 +11,29 @@ export const Modal = ({ title, trigger, inputFields, changeHandler, confirmHandl
         setShowModal(true);
     };
 
-    const fieldList = Object.entries(inputFields).map(([name, text]) => (
-        <div className="p-2" key={name}>
-            <label className="block font-medium">{text + ":"}</label>
-            {name === "body" ? 
-                <textarea 
-                    className="border-2 border-gray-300 rounded p-2 size-11/12"
-                    type="text"
-                    name={name}
-                    onChange={changeHandler}
-                />: 
-                <input
-                    className="border-2 border-gray-300 rounded p-2 size-11/12"
-                    type="text"
-                    name={name}
-                    onChange={changeHandler}
-                />}
-            
-        </div>
-    ));
-
+    var fieldList = null
+    if (inputFields != null) {
+        fieldList = Object.entries(inputFields).map(([name, text]) => (
+            <div className="p-2" key={name}>
+                <label className="block font-medium">{text + ":"}</label>
+                {name === "body" ? 
+                    <textarea 
+                        className="border-2 border-gray-300 rounded p-2 size-11/12"
+                        type="text"
+                        name={name}
+                        onChange={changeHandler}
+                    />: 
+                    <input
+                        className="border-2 border-gray-300 rounded p-2 size-11/12"
+                        type="text"
+                        name={name}
+                        onChange={changeHandler}
+                    />}
+                
+            </div>
+        ));
+    }
+    
     return (
         <div>
             <div onClick={open}>{trigger}</div>

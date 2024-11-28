@@ -139,21 +139,41 @@ export function CourseDashboard() {
     );
 
     const myCourses = courseInfo.map((course) => (
-        <a href={`/courses/${course.ID}`} key={course.ID}>
-            <div className="bg-gray-100 p-4 rounded shadow hover:bg-gray-300">
-                <h3 className="text-xl font-semibold truncate overflow-hidden">{course.title}</h3>
-                <p className="mt-2">{course.description}</p>
+        <a href={`/courses/${course.ID}`} key={course.ID} className="max-w-[40vw] aspect-[9/8]">
+            <div className="bg-gray-100 rounded shadow hover:bg-gray-300 flex flex-col h-full w-full outline outline-1 outline-black/25">
+                <div className="h-[60%] ">
+                    <img
+                        className="rounded outline outline-1 outline-black/40 object-fill w-full h-full block aspect-[16/9]" 
+                        src={process.env.PUBLIC_URL + `/content/${course.ID}/thumbnail.png`} 
+                        onError={(e)=>{e.target.onError = null; e.target.src = `/default_thumbnails/tn${course.ID % 5}.png`}}
+                        alt="Thumbnail"
+                    />
+                </div>
+                <div className="h-[40%] p-2 md:p-4 xl:p-2 overflow-hidden">
+                    <h3 className="text-base font-semibold truncate overflow-hidden">{course.title}</h3>
+                    <p className="truncate overflow-hidden">{course.description}</p>
+                </div>
             </div>
         </a>
     ));
 
     const allCourses = filteredCourses.map((course) => (
-        <div key={course.ID} className="course-box">
-            <a href={`/courses/${course.ID}`} key={course.ID}>
-                <h3><b>{course.title}</b></h3>
-                <p>{course.description}</p>
-            </a>
-        </div>
+        <a href={`/courses/${course.ID}`} key={course.ID} className="max-w-[40vw] aspect-[9/8]">
+            <div className="bg-gray-100 rounded shadow hover:bg-gray-300 flex flex-col h-full w-full outline outline-1 outline-black/25">
+                <div className="h-[60%] ">
+                    <img
+                        className="rounded outline outline-1 outline-black/40 object-fill w-full h-full block aspect-[16/9]" 
+                        src={process.env.PUBLIC_URL + `/content/${course.ID}/thumbnail.png`} 
+                        onError={(e)=>{e.target.onError = null; e.target.src = `/default_thumbnails/tn${course.ID % 5}.png`}}
+                        alt="Thumbnail"
+                    />
+                </div>
+                <div className="h-[40%] pl-2 p-1 overflow-hidden">
+                    <h3 className="text-base font-semibold truncate overflow-hidden">{course.title}</h3>
+                    <p className="truncate overflow-hidden">{course.description}</p>
+                </div>
+            </div>
+         </a>
     ))
 
     return (
@@ -171,7 +191,7 @@ export function CourseDashboard() {
             {/* My Courses Section */}
             <div className="mt-10">
                 <h2 className="text-xl font-semibold mb-4">My Courses</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-9">
                     {myCourses}
                 </div>
             </div>
@@ -179,18 +199,16 @@ export function CourseDashboard() {
             {/* All Courses Section */}
             <div className="mt-10">
                 <h2 className="text-xl font-semibold mb-4">All Courses</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div className="course-list">
-                        {loading ? (
-                            <p>Loading courses...</p>
-                        ) : filteredCourses.length > 0 ? (
-                            allCourses
-                        ) : (
-                            <div className="course-box">
-                                <p>Nothing to show, yet</p>
-                            </div>
-                        )}
-                    </div>
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-8 gap-7">
+                    {loading ? (
+                        <p>Loading courses...</p>
+                    ) : filteredCourses.length > 0 ? (
+                        allCourses
+                    ) : (
+                        <div className="course-box">
+                            <p>Nothing to show, yet</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

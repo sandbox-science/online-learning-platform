@@ -9,6 +9,7 @@ export function Course() {
     const [courseInfo, setCourseInfo] = useState(null);
     const [userInfo, setUserInfo]     = useState(null);
     const [error, setError]           = useState(null);
+    const [file, setFile]               = useState(null);
     const [newContentName, setNewContentName] = useState({
         title: "",
     });
@@ -82,6 +83,38 @@ export function Course() {
             }
         } catch (error) {
             Notiflix.Notify.failure("Error occurred during content creation");
+        }
+    };
+
+    const handleThumbnailUpload = (e) => {
+        setFile(e.target.files[0]);
+    }
+
+    const handleEditThumbnail = (courseID) => async (e) => {
+        if (file === null){
+            return
+        } 
+
+        const userId = Cookies.get('userId');
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            const response = await fetch(`http://localhost:4000/edit-thumbnail/${userId}/${courseID}`, {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                Notiflix.Notify.success("Thumbnail upload successful!");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            } else {
+                Notiflix.Notify.failure(data.message || "Thumbnail upload failed");
+            }
+        } catch (error) {
+            Notiflix.Notify.failure("Error occurred during thumbnail upload");
         }
     };
 
@@ -194,11 +227,28 @@ export function Course() {
         />
     }
 
+    let editThumbnail = null;
+    if (userInfo.role === "educator"){
+        editThumbnail = <Modal
+            title={"Edit Thumbnail"}
+            trigger={
+                <div className="bg-blue-500 p-2 rounded shadow hover:bg-blue-700 m-auto text-center text-sm text-white font-semibold hover:cursor-pointer" > 
+                    <div>Edit Thumbnail</div> 
+                </div>
+            }
+            confirmHandler={handleEditThumbnail(courseID)}
+            fileUploadHandler={handleThumbnailUpload}
+        />
+    }
+
     return (
         <div className="p-6">
             <div className="flex justify-between flex-wrap  mb-5">
                 <h1 className="text-2xl font-bold mb-4">{courseInfo.title}</h1>
-                {createButton}
+                <div className="flex flex-1 justify-end flex-wrap gap-5 ml-20">
+                    {editThumbnail}
+                    {createButton}
+                </div>
             </div>
             <div className="grid grid-cols-1 gap-6">
                 {moduleList}
