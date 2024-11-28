@@ -164,7 +164,7 @@ export function CourseDashboard() {
                     <img
                         className="rounded outline outline-1 outline-black/40 object-fill w-full h-full block aspect-[16/9]" 
                         src={process.env.PUBLIC_URL + `/content/${course.ID}/thumbnail.png`} 
-                        onError={(e)=>{e.target.onError = null; e.target.className = "invisible"}}
+                        onError={(e)=>{e.target.onError = null; e.target.src = `/default_thumbnails/tn${course.ID % 5}.png`}}
                         alt="Thumbnail"
                     />
                 </div>
