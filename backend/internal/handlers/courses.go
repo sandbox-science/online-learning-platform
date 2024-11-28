@@ -436,3 +436,57 @@ func DeleteFile(c *fiber.Ctx) error {
 		"message": "Successfully deleted file",
 	})
 }
+
+// Edit thumbnail of course
+func EditThumbnail(c *fiber.Ctx) error {
+	creator_id, err := strconv.Atoi(c.Params("creator_id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid creator_id"})
+	}
+
+	course_id, err := strconv.Atoi(c.Params("course_id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid course_id"})
+	}
+
+	var course entity.Course
+	// Check if the course exists
+	if err := database.DB.Where("id = ?", course_id).First(&course).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Course not found"})
+	}
+
+	//Verify that the account attempting to create a module is the creator of the course
+	if course.CreatorID != creator_id {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "User is not the course creator"})
+	}
+
+	file, err := c.FormFile("file")
+	if err != nil {
+		if err.Error() != "there is no uploaded file associated with the given key" {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid file"})
+		}
+	}
+
+	if file != nil {
+		if err := os.MkdirAll(fmt.Sprintf("./content/%d/", course_id), 0777); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+		}
+
+		//Remove previous attachment if there is one
+		if _, err := os.Stat(fmt.Sprintf("./content/%d/thumbnail.png", course_id)); err == nil {
+			if err := os.Remove(fmt.Sprintf("./content/%d/thumbnail.png", course_id)); err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+			}
+		} else if !os.IsNotExist(err){
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+		}
+
+		if err := c.SaveFile(file, fmt.Sprintf("./content/%d/thumbnail.png", course_id)); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
+		}
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Successfully updated thumbnail",
+	})
+}

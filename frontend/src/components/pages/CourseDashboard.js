@@ -139,10 +139,20 @@ export function CourseDashboard() {
     );
 
     const myCourses = courseInfo.map((course) => (
-        <a href={`/courses/${course.ID}`} key={course.ID}>
-            <div className="bg-gray-100 p-4 rounded shadow hover:bg-gray-300">
-                <h3 className="text-xl font-semibold truncate overflow-hidden">{course.title}</h3>
-                <p className="mt-2">{course.description}</p>
+        <a href={`/courses/${course.ID}`} key={course.ID} className="max-w-[40vw]">
+            <div className="bg-gray-100 rounded shadow hover:bg-gray-300 flex flex-col h-full w-full outline outline-1 outline-black/25">
+                <div className="h-[60%] ">
+                    <img
+                        className="rounded outline outline-1 outline-black/40 object-fill w-full h-full block aspect-[16/9] " 
+                        src={process.env.PUBLIC_URL + `/content/${course.ID}/thumbnail.png`} 
+                        onError={(e)=>{e.target.onError = null; e.target.className = "invisible"}}
+                        alt="Thumbnail"
+                    />
+                </div>
+                <div className="p-4">
+                    <h3 className="text-xl font-semibold truncate overflow-hidden">{course.title}</h3>
+                    <p className="mt-2 truncate overflow-hidden">{course.description}</p>
+                </div>
             </div>
         </a>
     ));
@@ -171,7 +181,7 @@ export function CourseDashboard() {
             {/* My Courses Section */}
             <div className="mt-10">
                 <h2 className="text-xl font-semibold mb-4">My Courses</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-9">
                     {myCourses}
                 </div>
             </div>
