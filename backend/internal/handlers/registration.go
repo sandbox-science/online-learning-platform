@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/sandbox-science/online-learning-platform/configs/database"
 	"github.com/sandbox-science/online-learning-platform/internal/entity"
@@ -33,21 +35,46 @@ func Register(c *fiber.Ctx) error {
 
 	// Create user account
 	user := entity.Account{
-		Username: encryptedUsername,
-		Email:    data["email"],
-		Password: data["password"],
-		Role:     data["role"],
+		Username:      encryptedUsername,
+		Email:         data["email"],
+		Password:      data["password"],
+		Role:          data["role"],
+		EmailVerified: false,
 	}
 
 	// Hash password
+
 	if err := utils.HashPassword(&user); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Couldn't hash password"})
 	}
 
 	// Add user to database
+
 	if err := database.DB.Create(&user).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 	}
+
+	// Trigger email verification asynchronously
+
+	go func(email string, userID uint) {
+
+		status, err := utils.VerifyEmailWithZeroBounce(email)
+		if err != nil {
+			log.Printf("[ERROR] Failed to verify email for user ID %d (%s): %v\n", userID, email, err)
+			return
+		}
+
+		if status == "valid" {
+			// Update EmailVerified to true
+			if err := database.DB.Model(&entity.Account{}).Where("id = ?", userID).Update("EmailVerified", true).Error; err != nil {
+				log.Printf("[ERROR] Failed to update EmailVerified for user ID %d (%s): %v\n", userID, email, err)
+			} else {
+				log.Printf("[INFO] Email verified successfully for user ID %d (%s)\n", userID, email)
+			}
+		} else {
+			log.Printf("[WARN] Invalid email detected for user ID %d (%s): %s\n", userID, email, status)
+		}
+	}(user.Email, user.ID)
 
 	return c.JSON(fiber.Map{
 		"message": "User registered successfully",
