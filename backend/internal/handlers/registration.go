@@ -35,11 +35,10 @@ func Register(c *fiber.Ctx) error {
 
 	// Create user account
 	user := entity.Account{
-		Username:      encryptedUsername,
-		Email:         data["email"],
-		Password:      data["password"],
-		Role:          data["role"],
-		EmailVerified: false,
+		Username: encryptedUsername,
+		Email:    data["email"],
+		Password: data["password"],
+		Role:     data["role"],
 	}
 
 	// Hash password

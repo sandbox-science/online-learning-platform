@@ -40,6 +40,5 @@ func VerifyEmailWithZeroBounce(email string) (string, error) {
 		return "", fmt.Errorf("error decoding ZeroBounce API response: %v", err)
 	}
 
-	// Return the email status
 	return result.Status, nil
 }
