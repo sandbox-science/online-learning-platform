@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import Notiflix from 'notiflix';
-import {Modal} from '../Modal.js';
+import {Modal} from '../components/Modal';
 
 export function Content() {
     const { courseID }                  = useParams();

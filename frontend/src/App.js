@@ -4,15 +4,15 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 
-import { Home } from './components/pages/Home'
-import { NotFound } from './components/pages/NotFound'
-import { HealthCheck } from './components/pages/HealthCheck';
-import { CourseDashboard } from './components/pages/CourseDashboard'
-import { Course } from './components/pages/Course'
-import { Login } from './components/pages/Login'
-import { Signup } from './components/pages/Signup'
-import { Account } from './components/pages/Account'
-import { Content } from './components/pages/Content'
+import { Home } from './pages/Home'
+import { NotFound } from './pages/NotFound'
+import { HealthCheck } from './pages/HealthCheck';
+import { CourseDashboard } from './pages/CourseDashboard'
+import { Course } from './pages/Course'
+import { Login } from './pages/Login'
+import { Signup } from './pages/Signup'
+import { Account } from './pages/Account'
+import { Content } from './pages/Content'
 
 import ProtectedRoute from "./config/ProtectedRoutes"
 

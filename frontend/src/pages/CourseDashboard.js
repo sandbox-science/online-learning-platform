@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import Cookies from 'js-cookie';
 import Notiflix from 'notiflix';
-import { Modal } from '../Modal.js';
-import SearchBar from '../search-bar.js'
-import CourseCard from '../CourseCard.js';
+import { Modal } from '../components/Modal';
+import SearchBar from '../components/search-bar';
+import CourseCard from '../components/CourseCard';
 
 export function CourseDashboard() {
     const userId                        = Cookies.get('userId');
