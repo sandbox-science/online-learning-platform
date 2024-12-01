@@ -41,13 +41,13 @@ export function Home() {
                     </a>
                 </div>
                 <div className="feature-box">
-                    <a href="https://github.com/sandbox-science/online-learning-platform/blob/main/README.md" target="_blank" rel="noreferrer">
+                    <a href="https://github.com/sandbox-science/online-learning-platform/wiki" target="_blank" rel="noreferrer">
                         <h3><b>MISSION</b></h3>
                         <p>Learn more about our mission and vision.</p>
                     </a>
                 </div>
                 <div className="feature-box">
-                    <a href="#top" target="_blank" rel="noreferrer">
+                    <a href="https://github.com/orgs/sandbox-science/discussions" target="_blank" rel="noreferrer">
                         <h3><b>CONTACT</b></h3>
                         <p>Reach out to us for support and inquiries.</p>
                     </a>
