@@ -20,13 +20,13 @@ export function Course() {
 
     const handleModuleChange = (e) => {
         const { name, value } = e.target;
-        setNewModuleName({[name]: value });
+        setNewModuleName({ [name]: value });
     };
 
-    const handleCreateModule = async (e) =>{
-        if (newModuleName.title === ""){
+    const handleCreateModule = async (e) => {
+        if (newModuleName.title === "") {
             return
-        } 
+        }
 
         const userId = Cookies.get('userId');
         try {
@@ -56,13 +56,13 @@ export function Course() {
 
     const handleContentChange = (e) => {
         const { name, value } = e.target;
-        setNewContentName({[name]: value });
+        setNewContentName({ [name]: value });
     };
 
-    const handleCreateContent = (moduleID) => async (e) =>{
-        if (newContentName.title === ""){
+    const handleCreateContent = (moduleID) => async (e) => {
+        if (newContentName.title === "") {
             return
-        } 
+        }
 
         const userId = Cookies.get('userId');
         try {
@@ -92,9 +92,9 @@ export function Course() {
     }
 
     const handleEditThumbnail = (courseID) => async (e) => {
-        if (file === null){
+        if (file === null) {
             return
-        } 
+        }
 
         const userId = Cookies.get('userId');
         try {
@@ -132,9 +132,9 @@ export function Course() {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                }, 
-        });
-        const data = await response.json();
+                },
+            });
+            const data = await response.json();
             if (response.ok) {
                 Notiflix.Notify.success("Succesfully enrolled in the course!");
                 setTimeout(() => {
@@ -162,9 +162,9 @@ export function Course() {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                }, 
-        });
-        const data = await response.json();
+                },
+            });
+            const data = await response.json();
             if (response.ok) {
                 Notiflix.Notify.success("Succesfully unenrolled in the course!");
                 setTimeout(() => {
@@ -190,38 +190,38 @@ export function Course() {
 
         async function fetchCourse() {
             fetch(`http://localhost:4000/course/${courseID}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then((data) => setCourseInfo(data.course))
-            .catch((error) => setError(error.message));
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then((data) => setCourseInfo(data.course))
+                .catch((error) => setError(error.message));
         }
 
         async function fetchUser() {
             await fetch(`http://localhost:4000/user/${userId}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then((data) => setUserInfo(data.user))
-            .catch((error) => setError(error.message));
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then((data) => setUserInfo(data.user))
+                .catch((error) => setError(error.message));
         }
 
         async function fetchIsEnrolled() {
             await fetch(`http://localhost:4000/is-enrolled/${userId}/${courseID}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then((data) => setIsEnrolled(data.isEnrolled))
-            .catch((error) => setError(error.message));
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then((data) => setIsEnrolled(data.isEnrolled))
+                .catch((error) => setError(error.message));
         }
 
         fetchCourse();
@@ -245,7 +245,7 @@ export function Course() {
                 </a>
             )
         })
-        if (userInfo.role === "educator"){
+        if (userInfo.role === "educator") {
             moduleList.push(
                 <div>
                     <div className="flex justify-between flex-wrap bg-slate-400 p-4 rounded shadow" >
@@ -255,12 +255,12 @@ export function Course() {
                         <Modal
                             title={"Add New Content"}
                             trigger={
-                                <div className="bg-blue-500 p-2 rounded shadow hover:bg-blue-700 m-auto text-center text-sm text-white font-semibold hover:cursor-pointer" > 
-                                    <div>+ Add Content</div> 
+                                <div className="bg-blue-500 p-2 rounded shadow hover:bg-blue-700 m-auto text-center text-sm text-white font-semibold hover:cursor-pointer" >
+                                    <div>+ Add Content</div>
                                 </div>
                             }
                             inputFields={{
-                                title : "Content Name",
+                                title: "Content Name",
                             }}
                             changeHandler={handleContentChange}
                             confirmHandler={handleCreateContent(module.ID)}
@@ -286,16 +286,16 @@ export function Course() {
     });
 
     let createButton = null;
-    if (userInfo.role === "educator"){
+    if (userInfo.role === "educator") {
         createButton = <Modal
             title={"Create New Module"}
             trigger={
-                <div className="bg-blue-500 p-2 rounded shadow hover:bg-blue-700 m-auto text-center text-sm text-white font-semibold hover:cursor-pointer" > 
-                    <div>+ Add Module</div> 
+                <div className="bg-blue-500 p-2 rounded shadow hover:bg-blue-700 m-auto text-center text-sm text-white font-semibold hover:cursor-pointer" >
+                    <div>+ Add Module</div>
                 </div>
             }
             inputFields={{
-                title : "Module Name",
+                title: "Module Name",
             }}
             changeHandler={handleModuleChange}
             confirmHandler={handleCreateModule}
@@ -303,12 +303,12 @@ export function Course() {
     }
 
     let editThumbnail = null;
-    if (userInfo.role === "educator"){
+    if (userInfo.role === "educator") {
         editThumbnail = <Modal
             title={"Edit Thumbnail"}
             trigger={
-                <div className="bg-blue-500 p-2 rounded shadow hover:bg-blue-700 m-auto text-center text-sm text-white font-semibold hover:cursor-pointer" > 
-                    <div>Edit Thumbnail</div> 
+                <div className="bg-blue-500 p-2 rounded shadow hover:bg-blue-700 m-auto text-center text-sm text-white font-semibold hover:cursor-pointer" >
+                    <div>Edit Thumbnail</div>
                 </div>
             }
             confirmHandler={handleEditThumbnail(courseID)}
@@ -324,13 +324,13 @@ export function Course() {
                     {editThumbnail}
                     {createButton}
                     {userInfo.role === "student" && (
-                    <button
-                    onClick={isEnrolled ? handleUnenroll : handleEnroll}
-                    className={`p-2 rounded shadow text-white font-semibold ${isEnrolled ? 'bg-red-500 hover:bg-red-700' : 'bg-green-500 hover:bg-green-700'}`}
-                >
-                    {isEnrolled ? 'Unenroll from Course' : 'Enroll in Course'}
-                    </button>
-                )}
+                        <button
+                            onClick={isEnrolled ? handleUnenroll : handleEnroll}
+                            className={`p-2 rounded shadow text-white font-semibold ${isEnrolled ? 'bg-red-500 hover:bg-red-700' : 'bg-green-500 hover:bg-green-700'}`}
+                        >
+                            {isEnrolled ? 'Unenroll from Course' : 'Enroll in Course'}
+                        </button>
+                    )}
                 </div>
             </div>
             <div className="grid grid-cols-1 gap-6">
