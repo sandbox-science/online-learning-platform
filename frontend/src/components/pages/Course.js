@@ -10,7 +10,7 @@ export function Course() {
     const [userInfo, setUserInfo]     = useState(null);
     const [error, setError]           = useState(null);
     const [file, setFile]               = useState(null);
-    const [isEnrolled, setIsEnrolled] = useState(false);
+    const [isEnrolled, setIsEnrolled] = useState(null);
     const [newContentName, setNewContentName] = useState({
         title: "",
     });
@@ -212,12 +212,25 @@ export function Course() {
             .catch((error) => setError(error.message));
         }
 
+        async function fetchIsEnrolled() {
+            await fetch(`http://localhost:4000/is-enrolled/${userId}/${courseID}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then((data) => setIsEnrolled(data.isEnrolled))
+            .catch((error) => setError(error.message));
+        }
+
         fetchCourse();
         fetchUser();
+        fetchIsEnrolled();
     }, [courseID]);
 
     if (error) return <p>Error: {error}</p>;
-    if (!courseInfo || !userInfo) return <p>Loading...</p>;
+    if (!courseInfo || !userInfo || isEnrolled === null) return <p>Loading...</p>;
 
     var moduleList = [];
     //Push all modules into moduleList

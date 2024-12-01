@@ -196,6 +196,30 @@ func CreateCourse(c *fiber.Ctx) error {
 	})
 }
 
+// Returns a true if user is enrolled in course
+func IsEnrolled(c *fiber.Ctx) error {
+	course_id := c.Params("course_id")
+	user_id := c.Params("user_id")
+
+	var count int64
+	
+	if err := database.DB.Table("enrollment").Where("account_id = ? AND course_id = ?", user_id, course_id).Count(&count).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Error retrieving courses"})
+	}
+	
+	if count > 0 {
+		return c.JSON(fiber.Map{
+			"message": "User is enrolled in this course",
+			"isEnrolled": true,
+		})
+	} else {
+		return c.JSON(fiber.Map{
+			"message": "User is not enrolled in this course",
+			"isEnrolled": false,
+		})
+	}
+}
+
 // Enroll user into course
 func Enroll(c *fiber.Ctx) error {
 	user_id := c.Params("user_id")
