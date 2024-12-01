@@ -334,6 +334,7 @@ export function Course() {
                 </div>
             </div>
             <div className="grid grid-cols-1 gap-6">
+                {courseInfo.description}
                 {moduleList}
             </div>
         </div>
