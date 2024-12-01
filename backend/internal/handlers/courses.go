@@ -61,7 +61,7 @@ func Course(c *fiber.Ctx) error {
 			Preload("Modules").
 			Preload("Modules.Content", func(db *gorm.DB) *gorm.DB {
 				return db.Order("id ASC")
-			  }).
+			}).
 			Preload("Tags").
 			Where("id = ?", courseID).
 			First(&course).Error; err != nil {
@@ -223,6 +223,70 @@ func Enroll(c *fiber.Ctx) error {
 	})
 }
 
+// Uneroll user into course
+func Unenroll(c *fiber.Ctx) error {
+	user_id := c.Params("user_id")
+	course_id := c.Params("course_id")
+
+	var user entity.Account
+	// Check if the user exists
+	if err := database.DB.Where("id = ?", user_id).First(&user).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
+	}
+
+	var course entity.Course
+	// Check if the course exists
+	if err := database.DB.Where("id = ?", course_id).First(&course).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Course not found"})
+	}
+
+	// Check if the user is enrolled in the course
+	if err := database.DB.Model(&user).Association("Courses").Find(&course); err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User is not enrolled in this course"})
+	}
+
+	// Unenroll user into course
+	if err := database.DB.Model(&user).Association("Courses").Delete(&course); err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Error unenrolling into course"})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": fmt.Sprintf("Successfully unenrolled user id %d in course %s", user.ID, course.Title),
+	})
+}
+
+func CheckEnrollmentStatus(c *fiber.Ctx) error {
+	user_id := c.Params("user_id")
+	course_id := c.Params("course_id")
+
+	var user entity.Account
+	// Check if the user exists
+	if err := database.DB.Where("id = ?", user_id).First(&user).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
+	}
+
+	var course entity.Course
+	// Check if the course exists
+	if err := database.DB.Where("id = ?", course_id).First(&course).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Course not found"})
+	}
+
+	// Check if the user is enrolled in the course
+	isEnrolled := false
+	if err := database.DB.Table("enrollment").
+		Where("account_id = ? AND course_id = ?", user_id, course_id).
+		Select("count(*) > 0").
+		Scan(&isEnrolled).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Error checking enrollment status"})
+	}
+
+	// Return the enrollment status
+	return c.JSON(fiber.Map{
+		"message":    "Enrollment status checked successfully",
+		"isEnrolled": isEnrolled,
+	})
+}
+
 // Create a module inside a course
 func CreateModule(c *fiber.Ctx) error {
 	creator_id, err := strconv.Atoi(c.Params("creator_id"))
@@ -372,7 +436,7 @@ func EditContent(c *fiber.Ctx) error {
 			if err := os.Remove("./content" + path); err != nil {
 				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 			}
-		} else if !os.IsNotExist(err){
+		} else if !os.IsNotExist(err) {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 		}
 
@@ -480,7 +544,7 @@ func EditThumbnail(c *fiber.Ctx) error {
 			if err := os.Remove(fmt.Sprintf("./content/%d/thumbnail.png", course_id)); err != nil {
 				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 			}
-		} else if !os.IsNotExist(err){
+		} else if !os.IsNotExist(err) {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 		}
 

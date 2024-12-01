@@ -10,6 +10,7 @@ export function Course() {
     const [userInfo, setUserInfo]     = useState(null);
     const [error, setError]           = useState(null);
     const [file, setFile]               = useState(null);
+    const [isEnrolled, setIsEnrolled] = useState(false);
     const [newContentName, setNewContentName] = useState({
         title: "",
     });
@@ -117,6 +118,67 @@ export function Course() {
             Notiflix.Notify.failure("Error occurred during thumbnail upload");
         }
     };
+
+    const handleEnroll = async () => {
+        const userId = Cookies.get('userId');
+
+        if (!userId) {
+            setError('User ID not found');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:4000/Enroll/${userId}/${courseID}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                }, 
+        });
+        const data = await response.json();
+            if (response.ok) {
+                Notiflix.Notify.success("Succesfully enrolled in the course!");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            } else {
+                Notiflix.Notify.failure(data.message || "Enrollment failed");
+            }
+        } catch (error) {
+            Notiflix.Notify.failure("Error occurred during enrollment");
+        }
+
+    };
+
+    const handleUnenroll = async () => {
+        const userId = Cookies.get('userId');
+
+        if (!userId) {
+            setError('User ID not found');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:4000/Unenroll/${userId}/${courseID}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                }, 
+        });
+        const data = await response.json();
+            if (response.ok) {
+                Notiflix.Notify.success("Succesfully unenrolled in the course!");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            } else {
+                Notiflix.Notify.failure(data.message || "Unenrollment failed");
+            }
+        } catch (error) {
+            Notiflix.Notify.failure("Error occurred during Unenrollment");
+        }
+
+    };
+
 
     useEffect(() => {
         const userId = Cookies.get('userId');
@@ -248,6 +310,14 @@ export function Course() {
                 <div className="flex flex-1 justify-end flex-wrap gap-5 ml-20">
                     {editThumbnail}
                     {createButton}
+                    {userInfo.role === "student" && (
+                    <button
+                    onClick={isEnrolled ? handleUnenroll : handleEnroll}
+                    className={`p-2 rounded shadow text-white font-semibold ${isEnrolled ? 'bg-red-500 hover:bg-red-700' : 'bg-green-500 hover:bg-green-700'}`}
+                >
+                    {isEnrolled ? 'Unenroll from Course' : 'Enroll in Course'}
+                    </button>
+                )}
                 </div>
             </div>
             <div className="grid grid-cols-1 gap-6">

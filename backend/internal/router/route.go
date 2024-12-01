@@ -92,4 +92,5 @@ func SetupRoutes(app *fiber.App) {
 	app.Post("/edit-content/:creator_id/:content_id", handlers.EditContent)
 	app.Post("/edit-thumbnail/:creator_id/:course_id", handlers.EditThumbnail)
 	app.Post("/enroll/:user_id/:course_id", handlers.Enroll)
+	app.Delete("/unenroll/:user_id/:course_id", handlers.Unenroll)
 }
