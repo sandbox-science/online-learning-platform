@@ -150,13 +150,11 @@ export function CourseDashboard() {
                             <p>Loading courses...</p>
                         ) : filteredCourses.length > 0 ? (
                             allCourses
-                        ) : (
-                            <div className="course-box">
-                                <p>Nothing to show, yet</p>
-                            </div>
-                        )}
+                        ) : <p>No Courses...</p>
+                        }
                     </div>
-                </div>)}
+                </div>
+            )}
         </div>
     );
 }
