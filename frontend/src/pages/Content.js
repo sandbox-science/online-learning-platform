@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import Notiflix from 'notiflix';
-import {Modal} from '../components/Modal';
+import { Modal } from '../components/Modal';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 export function Content() {
     const { courseID }                  = useParams();
@@ -165,9 +166,10 @@ export function Content() {
 
     return (
         <div className="p-6">
-            <div className="flex justify-between">
-                <a href={`/courses/${courseID}`}>
-                    <span className="text-2xl font-bold mb-4 hover:underline ">{courseInfo.title}</span>
+            <div className="flex justify-between items-center">
+                <a href={`/courses/${courseID}`} className="flex items-center mb-5">
+                    <ArrowLeftIcon className="w-6 h-6" />
+                    <span className="text-2xl font-bold mb-0 ml-2 hover:underline">{courseInfo.title}</span>
                 </a>
                 {editButton}
             </div>
@@ -177,7 +179,7 @@ export function Content() {
             <div>
                 {contentInfo.body}
             </div>
-            <div className="flex flex-auto justify-center m-5"> 
+            <div className="flex flex-auto justify-center m-5">
                 {attachment}
             </div>
         </div>
